@@ -1,0 +1,237 @@
+import type { Category } from "../types/categories";
+
+/**
+ * All menu categories, in display order.
+ * To add or edit a category, just edit this array — nothing
+ * else in the app needs to change.
+ *
+ * `image` files live in /public/images/categories/. Swap the
+ * placeholder jpgs for real photos whenever you're ready; keep
+ * the same filenames or update the paths here.
+ */
+// export const categories: Category[] = [
+//   {
+//     id: "coffee",
+//     titleEn: "COFFEE",
+//     titleFa: "انواع قهوه‌های گرم",
+//     image: "/images/categories/coffee.jpg",
+//   },
+//   {
+//     id: "cold-drinks",
+//     titleEn: "COLD DRINKS",
+//     titleFa: "نوشیدنی‌های سرد",
+//     image: "/images/categories/cold-drinks.jpg",
+//   },
+//   {
+//     id: "dessert",
+//     titleEn: "DESSERT",
+//     titleFa: "دسرهای خوشمزه",
+//     image: "/images/categories/dessert.jpg",
+//   },
+//   {
+//     id: "breakfast",
+//     titleEn: "BREAKFAST",
+//     titleFa: "صبحانه",
+//     image: "/images/categories/breakfast.jpg",
+//   },
+//   {
+//     id: "food",
+//     titleEn: "FOOD",
+//     titleFa: "غذاهای اصلی",
+//     image: "/images/categories/food.jpg",
+//   },
+//   {
+//     id: "mocktail",
+//     titleEn: "MOCKTAIL",
+//     titleFa: "موکتل‌ها",
+//     image: "/images/categories/mocktail.jpg",
+//   },
+// ];
+
+export const categories: Category[] = [
+  {
+    id: "hot-drinks",
+    titleFa: "نوشیدنی گرم",
+    titleEn: "Hot Drinks",
+    image: "/images/hot-drinks.jpg",
+    items: [
+      {
+        id: "espresso-single",
+        name: "اسپرسو سینگل",
+        nameEn: "Single Espresso",
+        description: "یک شات اسپرسو خالص با عطر و طعم قوی قهوه",
+        price: "۸۰,۰۰۰ تومان",
+        image: "/images/categories/espresso-single.webp",
+      },
+      {
+        id: "espresso-double",
+        name: "اسپرسو دبل",
+        nameEn: "Double Espresso",
+        description: "دو شات اسپرسوی غلیظ با طعم عمیق و انرژی بیشتر",
+        price: "۹۰,۰۰۰ تومان",
+        image: "/images/categories/espresso-double.webp",
+      },
+      {
+        id: "americano",
+        name: "آمریکانو",
+        nameEn: "Americano",
+        description: "ترکیب اسپرسو و آب داغ با طعمی ملایم و متعادل",
+        price: "۱۱۰,۰۰۰ تومان",
+        image: "/images/categories/americano.webp",
+      },
+      {
+        id: "latte",
+        name: "لاته",
+        nameEn: "Latte",
+        description: "اسپرسو همراه با شیر بخار داده شده و فوم لطیف شیر",
+        price: "۱۳۰,۰۰۰ تومان",
+        image: "/images/categories/latte.webp",
+      },
+      {
+        id: "caramel-macchiato",
+        name: "کارامل ماکیاتو",
+        nameEn: "Caramel Macchiato",
+        description: "اسپرسو، شیر بخار داده شده و طعم شیرین کارامل",
+        price: "۱۵۰,۰۰۰ تومان",
+        image: "/images/categories/caramel-macchiato.webp",
+      },
+      {
+        id: "mocha",
+        name: "موکا",
+        nameEn: "Mocha",
+        description: "ترکیب اسپرسو، شیر و شکلات با طعمی شیرین و دلچسب",
+        price: "۱۵۰,۰۰۰ تومان",
+        image: "/images/categories/mocha.webp",
+      },
+      {
+        id: "vanilla-macchiato",
+        name: "وانیل ماکیاتو",
+        nameEn: "Vanilla Macchiato",
+        description: "اسپرسو با شیر و عطر لطیف وانیل",
+        price: "۱۵۰,۰۰۰ تومان",
+        image: "/images/categories/vanilla-macchiato.webp",
+      },
+      {
+        id: "hazelnut-macchiato",
+        name: "فندق ماکیاتو",
+        nameEn: "Hazelnut Macchiato",
+        description: "اسپرسو با شیر و رایحه دلنشین فندق",
+        price: "۱۵۰,۰۰۰ تومان",
+        image: "/images/categories/hazelnut-macchiato.webp",
+      },
+      {
+        id: "friends-special",
+        name: "نوشیدنی مخصوص کافه فرندز",
+        nameEn: "Cafe Friends Special",
+        description: "ترکیبی ویژه با دستور اختصاصی کافه فرندز",
+        price: "۱۸۰,۰۰۰ تومان",
+        image: "/images/categories/friends-special.webp",
+      },
+      {
+        id: "chai-masala",
+        name: "چای ماسالا",
+        nameEn: "Chai Masala",
+        description: "چای هندی با ترکیب ادویه‌های معطر و شیر",
+        price: "۱۳۰,۰۰۰ تومان",
+        image: "/images/categories/chai-masala.webp",
+      },
+      {
+        id: "tea",
+        name: "چای",
+        nameEn: "Tea",
+        description: "چای سیاه خوش‌عطر و تازه دم",
+        price: "۱۳۰,۰۰۰ تومان",
+        image: "/images/categories/tea.webp",
+      },
+      {
+        id: "hot-chocolate",
+        name: "هات چاکلت",
+        nameEn: "Hot Chocolate",
+        description: "شکلات داغ خامه‌ای با شیر گرم",
+        price: "۱۳۰,۰۰۰ تومان",
+        image: "/images/categories/hot-chocolate.webp",
+      },
+      {
+        id: "white-chocolate",
+        name: "وایت چاکلت",
+        nameEn: "White Chocolate",
+        description: "نوشیدنی گرم با طعم شکلات سفید و شیر",
+        price: "۱۳۰,۰۰۰ تومان",
+        image: "/images/categories/white-chocolate.webp",
+      },
+      {
+        id: "cappuccino",
+        name: "کاپوچینو",
+        nameEn: "Cappuccino",
+        description: "اسپرسو با شیر بخار داده شده و فوم شیر فراوان",
+        price: "۱۳۰,۰۰۰ تومان",
+        image: "/images/categories/cappuccino.webp",
+      },
+    ],
+  },
+
+  {
+    id: "cold-drinks",
+    titleFa: "نوشیدنی سرد",
+    titleEn: "Cold Drinks",
+    image: "/images/categories/coffee.jpg",
+    items: [
+      {
+        id: "iced-americano",
+        name: "آیس آمریکانو",
+        nameEn: "Iced Americano",
+        description: "اسپرسو، آب سرد و یخ با طعمی خنک و متعادل",
+        price: "۱۱۰,۰۰۰ تومان",
+        image: "/images/categories/ice-americano.webp",
+      },
+      {
+        id: "iced-latte",
+        name: "آیس لاته",
+        nameEn: "Iced Latte",
+        description: "اسپرسو با شیر سرد و یخ، نوشیدنی‌ای لطیف و خنک",
+        price: "۱۳۰,۰۰۰ تومان",
+        image: "/images/categories/ice-latte.webp",
+      },
+      {
+        id: "iced-caramel-macchiato",
+        name: "آیس کارامل ماکیاتو",
+        nameEn: "Iced Caramel Macchiato",
+        description: "ترکیب اسپرسو، شیر سرد و سس کارامل با طعمی شیرین",
+        price: "۱۵۰,۰۰۰ تومان",
+        image: "/images/categories/ice-caramel-macchiato.webp",
+      },
+      {
+        id: "iced-mocha",
+        name: "آیس موکا",
+        nameEn: "Iced Mocha",
+        description: "اسپرسو، شیر سرد و شکلات با طعمی خنک و دلچسب",
+        price: "۱۵۰,۰۰۰ تومان",
+        image: "/images/categories/ice-mocha.webp",
+      },
+      {
+        id: "iced-vanilla-macchiato",
+        name: "آیس وانیل ماکیاتو",
+        nameEn: "Iced Vanilla Macchiato",
+        description: "اسپرسو، شیر سرد و عطر لطیف وانیل با یخ",
+        price: "۱۵۰,۰۰۰ تومان",
+        image: "/images/categories/ice-vanilla-macchiato.webp",
+      },
+      {
+        id: "iced-hazelnut-macchiato",
+        name: "آیس فندق ماکیاتو",
+        nameEn: "Iced Hazelnut Macchiato",
+        description: "اسپرسو، شیر سرد و طعم دلنشین فندق با یخ",
+        price: "۱۵۰,۰۰۰ تومان",
+        image: "/images/categories/ice-hazelnut-macchiato.webp",
+      },
+      {
+        id: "blue-sky",
+        name: "بلو اسکای",
+        nameEn: "Blue Sky",
+        description: "نوشیدنی خنک و خاص با رنگ آبی و طعمی متفاوت",
+        price: "۲۰۰,۰۰۰ تومان",
+        image: "/images/categories/ice-blue-sky.webp",
+      },
+    ],
+  },
+];

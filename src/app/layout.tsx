@@ -41,6 +41,7 @@ import "./globals.css";
 
 const vazirmatn = Vazirmatn({
   subsets: ["arabic"],
+  variable: "--font-farsi",
   display: "swap",
 });
 
@@ -56,9 +57,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fa" dir="rtl">
-      <body className={`${vazirmatn.className} min-h-screen bg-[#F8F5F0] text-[#4B3621]`}>
-        {children}
-      </body>
+      <body className="font-farsi min-h-screen">{children}</body>
     </html>
   );
 }

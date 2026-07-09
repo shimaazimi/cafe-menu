@@ -1,9 +1,9 @@
-import Hero from "../components/hero/Hero";
+import CafeApp from "./CafeApp";
 
 export default function Home() {
   return (
     <>
-      <Hero />
+      <CafeApp />
     </>
   );
 }

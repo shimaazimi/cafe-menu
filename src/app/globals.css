@@ -48,6 +48,17 @@ body {
   --color-border: var(--border);
 }
 
+@theme {
+  --color-espresso: #3a2e27;
+  --color-latte: #f4efe8;
+  --color-sand: #e7dfd2;
+  --color-clay: #8b7355;
+
+  --font-display: var(--font-display), serif;
+  --font-body: var(--font-body), sans-serif;
+  --font-farsi: var(--font-farsi), sans-serif;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -59,4 +70,11 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
 }
