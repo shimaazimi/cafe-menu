@@ -1,0 +1,37 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 64 64"
+  fill="none"
+>
+  <!-- Steam -->
+  <path
+    d="M24 10c-2 3 2 5 0 8M32 10c-2 3 2 5 0 8M40 10c-2 3 2 5 0 8"
+    stroke="#8B6B4A"
+    stroke-width="2.4"
+    stroke-linecap="round"
+  />
+
+  <!-- Cup -->
+  <path
+    d="M14 24h32v16c0 8.5-7 15-16 15S14 48.5 14 40V24Z"
+    stroke="#8B6B4A"
+    stroke-width="3"
+    stroke-linejoin="round"
+  />
+
+  <!-- Handle -->
+  <path
+    d="M46 28h5a7 7 0 0 1 0 14h-5"
+    stroke="#8B6B4A"
+    stroke-width="3"
+    stroke-linecap="round"
+  />
+
+  <!-- Saucer -->
+  <path
+    d="M10 56h40"
+    stroke="#8B6B4A"
+    stroke-width="3"
+    stroke-linecap="round"
+  />
+</svg>

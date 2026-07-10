@@ -92,6 +92,7 @@
 import { forwardRef } from "react";
 import Image from "next/image";
 import { siteInfo } from "../../data/site";
+import Logo from "../shared/Logo";
 
 interface HeroProps {
   onOpenMenu: () => void;
@@ -133,6 +134,7 @@ const Hero = forwardRef<HTMLElement, HeroProps>(({ onOpenMenu }, ref) => {
 
       {/* content */}
       <div className="relative z-10 flex flex-col items-center" dir="rtl">
+        <Logo size={40} showWordmark={false} />
         <h1 className="font-display text-espresso mb-3 text-5xl font-bold">
           {siteInfo.heroTitleFa}
         </h1>

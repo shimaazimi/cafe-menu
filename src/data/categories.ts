@@ -1,53 +1,5 @@
 import type { Category } from "../types/categories";
 
-/**
- * All menu categories, in display order.
- * To add or edit a category, just edit this array — nothing
- * else in the app needs to change.
- *
- * `image` files live in /public/images/categories/. Swap the
- * placeholder jpgs for real photos whenever you're ready; keep
- * the same filenames or update the paths here.
- */
-// export const categories: Category[] = [
-//   {
-//     id: "coffee",
-//     titleEn: "COFFEE",
-//     titleFa: "انواع قهوه‌های گرم",
-//     image: "/images/categories/coffee.jpg",
-//   },
-//   {
-//     id: "cold-drinks",
-//     titleEn: "COLD DRINKS",
-//     titleFa: "نوشیدنی‌های سرد",
-//     image: "/images/categories/cold-drinks.jpg",
-//   },
-//   {
-//     id: "dessert",
-//     titleEn: "DESSERT",
-//     titleFa: "دسرهای خوشمزه",
-//     image: "/images/categories/dessert.jpg",
-//   },
-//   {
-//     id: "breakfast",
-//     titleEn: "BREAKFAST",
-//     titleFa: "صبحانه",
-//     image: "/images/categories/breakfast.jpg",
-//   },
-//   {
-//     id: "food",
-//     titleEn: "FOOD",
-//     titleFa: "غذاهای اصلی",
-//     image: "/images/categories/food.jpg",
-//   },
-//   {
-//     id: "mocktail",
-//     titleEn: "MOCKTAIL",
-//     titleFa: "موکتل‌ها",
-//     image: "/images/categories/mocktail.jpg",
-//   },
-// ];
-
 export const categories: Category[] = [
   {
     id: "hot-drinks",
@@ -136,11 +88,19 @@ export const categories: Category[] = [
         image: "/images/categories/chai-masala.webp",
       },
       {
-        id: "tea",
-        name: "چای",
-        nameEn: "Tea",
-        description: "چای سیاه خوش‌عطر و تازه دم",
+        id: "karak-tea",
+        name: "چای کرک",
+        nameEn: "Karak Tea",
+        description: "چای کرک با شیر و ترکیبی از ادویه‌های معطر، نوشیدنی‌ای گرم و خوش‌طعم",
         price: "۱۳۰,۰۰۰ تومان",
+        image: "/images/categories/chai-masala.webp",
+      },
+      {
+        id: "black-tea",
+        name: "چای ساده",
+        nameEn: "Black Tea",
+        description: "چای سیاه تازه‌دم، ساده و خوش‌عطر",
+        price: "۵۰,۰۰۰ تومان",
         image: "/images/categories/tea.webp",
       },
       {
@@ -231,6 +191,22 @@ export const categories: Category[] = [
         description: "نوشیدنی خنک و خاص با رنگ آبی و طعمی متفاوت",
         price: "۲۰۰,۰۰۰ تومان",
         image: "/images/categories/ice-blue-sky.webp",
+      },
+      {
+        id: "lemonade",
+        name: "لیموناد",
+        nameEn: "Lemonade",
+        description: "ترکیبی خنک از آبلیمو تازه، یخ و سیروپ با طعمی ترش و شیرین",
+        price: "۱۲۰,۰۰۰ تومان",
+        image: "/images/categories/lemonade.webp",
+      },
+      {
+        id: "mojito",
+        name: "موهیتو",
+        nameEn: "Mojito",
+        description: "نوشیدنی خنک با نعناع تازه، لیمو و یخ، طعمی شاداب و تابستانی",
+        price: "۱۲۰,۰۰۰ تومان",
+        image: "/images/categories/mojito.webp",
       },
     ],
   },

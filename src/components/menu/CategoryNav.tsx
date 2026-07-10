@@ -1,41 +1,6 @@
-// import type { Category } from "@/types/categories";
-
 import { useEffect, useRef } from "react";
 import type { Category } from "../../types/categories";
 
-// interface Props {
-//   categories: Category[];
-//   activeCategory: string;
-// }
-
-// export default function CategoryNav({ categories, activeCategory }: Props) {
-//   function scrollToCategory(id: string) {
-//     document.getElementById(id)?.scrollIntoView({
-//       behavior: "smooth",
-//       block: "start",
-//     });
-//   }
-
-//   return (
-//     <nav className="sticky top-0 z-20 bg-[#faf7f2]/90 px-4 py-3 backdrop-blur">
-//       <ul className="no-scrollbar flex gap-3 overflow-x-auto">
-//         {categories.map((category) => (
-//           <li key={category.id}>
-//             <button
-//               onClick={() => scrollToCategory(category.id)}
-
-//               className={`rounded-full px-4 py-2 text-sm whitespace-nowrap transition ${
-//                 activeCategory === category.id ? "bg-espresso text-latte" : "text-espresso bg-white"
-//               } `}
-//             >
-//               {category.titleFa}
-//             </button>
-//           </li>
-//         ))}
-//       </ul>
-//     </nav>
-//   );
-// }
 interface Props {
   categories: Category[];
   activeCategory: string;

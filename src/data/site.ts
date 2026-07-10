@@ -1,7 +1,7 @@
 export const siteInfo = {
-  name: "CAFE",
+  name: "کافه فرندز",
   establishedYear: 2023,
-  addressFa: "تهران، خیابان مثال، پلاک ۱۲",
+  addressFa: "بازار بزرگ تهران بازار سید اسماعیل میدان پلاک ۲",
   instagramHandle: "@cafe.example",
   heroTitleFa: "کافه فرندز",
   heroSubtitleFa: "به منوی دیجیتال خوش آمدید",

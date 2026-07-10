@@ -3,8 +3,6 @@
 import { BookOpen } from "lucide-react";
 
 interface NavButtonProps {
-  /** "circle" = the round button on the hero. "bar" = the pinned
-   *  bottom bar shown at the base of the menu panel. */
   variant: "circle" | "bar";
   label: string;
   onClick: () => void;
