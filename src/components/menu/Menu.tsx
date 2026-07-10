@@ -93,7 +93,7 @@ const Menu = forwardRef<HTMLElement, MenuProps>(({ onBack, onSelectCategory }, r
 
       {/* Footer */}
 
-      <div className="border-espresso/10 text-espresso mx-auto mb-24 flex w-full max-w-md items-center justify-between rounded-2xl border bg-white/60 px-4 py-4">
+      <div className="border-espresso/10 text-espresso mx-auto mb-14 flex w-full max-w-md items-center justify-between rounded-2xl border bg-white/60 px-4 py-4">
         <div className="flex items-start gap-2">
           <MapPin className="mt-0.5 h-4 w-4" strokeWidth={1.5} />
 
