@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import Hero from "@/components/hero/Hero";
 import Menu from "@/components/menu/Menu";
-import type { Category } from "../types/categories";
+import type { Category } from "../../types/categories";
 
 /**
  * Owns the scroll behavior between the two full-screen sections.
