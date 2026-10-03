@@ -27,9 +27,16 @@
   --color-sand: #e7dfd2;
   --color-clay: #8b7355;
 
+  --color-ink: #211712;
+  --color-ink-light: #322319;
+  --color-gold: #c9a24d;
+  --color-gold-light: #e4c987;
+  --color-parchment: #f3ead9;
+
   --font-display: var(--font-display), serif;
   --font-body: var(--font-body), sans-serif;
   --font-farsi: var(--font-farsi), sans-serif;
+  --font-farsi-display: var(--font-farsi-display), var(--font-farsi), serif;
 }
 
 * {
@@ -50,4 +57,25 @@ body {
 
 .no-scrollbar {
   scrollbar-width: none;
+}
+
+.bg-arabesque {
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    color-mix(in srgb, var(--color-gold) 35%, transparent) 1px,
+    transparent 0
+  );
+  background-size: 18px 18px;
+}
+
+.divider-ornate {
+  height: 10px;
+  background-image: repeating-linear-gradient(
+    135deg,
+    var(--color-gold) 0px,
+    var(--color-gold) 2px,
+    transparent 2px,
+    transparent 10px
+  );
+  opacity: 0.55;
 }

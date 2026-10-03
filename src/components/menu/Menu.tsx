@@ -1,9 +1,11 @@
 "use client";
 
 import { forwardRef, useEffect, useState, useRef } from "react";
-import { MapPin } from "lucide-react";
+import Link from "next/link";
+import { MapPin, Store } from "lucide-react";
 
 import NavButton from "@/components/shared/NavButton";
+import CartBadgeLink from "@/components/shared/CartBadgeLink";
 
 import { categories } from "@/data/categories";
 import { siteInfo } from "@/data/site";
@@ -66,8 +68,18 @@ const Menu = forwardRef<HTMLElement, MenuProps>(({ onBack, onSelectCategory }, r
     >
       {/* Header */}
 
-      <div className="flex flex-col items-center gap-2 px-8 pt-10 pb-5">
+      <div className="relative flex flex-col items-center gap-2 px-8 pt-10 pb-5">
         <Logo />
+
+        <Link
+          href="/shop"
+          aria-label="فروشگاه"
+          className="border-espresso/20 text-espresso absolute top-8 right-6 flex h-10 w-10 items-center justify-center rounded-full border bg-white/70"
+        >
+          <Store className="h-4 w-4" strokeWidth={1.5} />
+        </Link>
+
+        <CartBadgeLink />
       </div>
 
       {/* Sticky categories */}

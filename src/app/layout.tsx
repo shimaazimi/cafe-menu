@@ -1,10 +1,19 @@
 import type { Metadata } from "next";
-import { Vazirmatn } from "next/font/google";
+import { Vazirmatn, Lalezar } from "next/font/google";
 import "./globals.css";
+
+import ToastViewport from "@/components/shared/ToastViewport";
 
 const vazirmatn = Vazirmatn({
   subsets: ["arabic"],
   variable: "--font-farsi",
+  display: "swap",
+});
+
+const lalezar = Lalezar({
+  subsets: ["arabic"],
+  weight: "400",
+  variable: "--font-farsi-display",
   display: "swap",
 });
 
@@ -20,7 +29,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fa" dir="rtl">
-      <body className="font-farsi min-h-screen">{children}</body>
+      <body className={`${vazirmatn.variable} ${lalezar.variable} font-farsi min-h-screen`}>
+        {children}
+        <ToastViewport />
+      </body>
     </html>
   );
 }
