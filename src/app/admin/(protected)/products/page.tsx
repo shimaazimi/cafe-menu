@@ -79,7 +79,12 @@ export default async function AdminProductsPage() {
                         {formatToman(product.compareAtPrice)}
                       </div>
                     )}
-                    <div className="text-espresso font-bold">{formatToman(product.priceToman)}</div>
+                    <div className="text-espresso font-bold">
+                      {product.priceOnRequest ? "استعلام" : formatToman(product.priceToman)}
+                    </div>
+                    {product.priceBasisGrams === 1000 && !product.priceOnRequest && (
+                      <div className="text-clay/70 text-[10px]">هر کیلو</div>
+                    )}
                   </td>
                   <td className="px-4 py-3">
                     <span

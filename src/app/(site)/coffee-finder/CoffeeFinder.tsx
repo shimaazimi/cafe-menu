@@ -16,6 +16,14 @@ interface Product {
   coffeeType: string | null;
   strength: number | null;
   bitterness: number | null;
+  acidity: number | null;
+  body: number | null;
+  caffeineLevel: number | null;
+  arabicaPercent: number | null;
+  robustaPercent: number | null;
+  productForm: string | null;
+  catalogOnly: boolean;
+  priceOnRequest: boolean;
   flavorNotes: string[];
   suitableFor: string[];
   brewMethods: string[];
@@ -39,6 +47,8 @@ const questions = [
       ["moka", "موکاپات"],
       ["french_press", "فرنچ‌پرس"],
       ["filter", "دمی"],
+      ["turkish", "ترک"],
+      ["instant", "فوری"],
     ],
   },
   {
@@ -47,12 +57,21 @@ const questions = [
     options: [
       ["strong", "تلخ و قوی"],
       ["balanced", "متعادل"],
-      ["mild", "ملایم"],
+      ["fruity", "میوه‌ای و اسیدی"],
+    ],
+  },
+  {
+    key: "caffeine",
+    title: "چه مقدار کافئین می‌خواهی؟",
+    options: [
+      ["high", "زیاد و انرژی‌بخش"],
+      ["medium", "متوسط"],
+      ["low", "کمتر و ملایم‌تر"],
     ],
   },
 ] as const;
 
-type Answers = { use?: string; brew?: string; taste?: string };
+type Answers = { use?: string; brew?: string; taste?: string; caffeine?: string };
 
 export default function CoffeeFinder({ products }: { products: Product[] }) {
   const [step, setStep] = useState(0);
@@ -60,13 +79,20 @@ export default function CoffeeFinder({ products }: { products: Product[] }) {
   const complete = step >= questions.length;
 
   const ranked = useMemo(() => {
-    const targetStrength = answers.taste === "strong" ? 5 : answers.taste === "mild" ? 2 : 3;
+    const targetStrength = answers.taste === "strong" ? 5 : answers.taste === "fruity" ? 2 : 3;
+    const targetAcidity = answers.taste === "fruity" ? 5 : answers.taste === "strong" ? 1 : 3;
+    const targetCaffeine = answers.caffeine === "high" ? 5 : answers.caffeine === "low" ? 2 : 3;
     return products
       .map((product) => {
         let score = 0;
         if (answers.use && product.suitableFor.includes(answers.use)) score += 4;
         if (answers.brew && product.brewMethods.includes(answers.brew)) score += 5;
         if (product.strength) score += Math.max(0, 4 - Math.abs(product.strength - targetStrength));
+        if (product.acidity) score += Math.max(0, 3 - Math.abs(product.acidity - targetAcidity));
+        if (product.caffeineLevel)
+          score += Math.max(0, 4 - Math.abs(product.caffeineLevel - targetCaffeine));
+        if (answers.taste === "strong" && product.body) score += product.body;
+        if (answers.taste === "fruity" && product.flavorNotes.includes("fruity")) score += 3;
         if (answers.taste === "strong" && product.coffeeType === "robusta") score += 2;
         return { product, score };
       })
@@ -170,7 +196,7 @@ export default function CoffeeFinder({ products }: { products: Product[] }) {
                       {product.description}
                     </p>
                     <span className="font-farsi text-espresso mt-3 flex items-center justify-between text-xs font-bold">
-                      {formatToman(product.priceToman)}
+                      {product.priceOnRequest ? "استعلام قیمت" : formatToman(product.priceToman)}
                       <ArrowLeft className="h-4 w-4 transition group-hover:-translate-x-1" />
                     </span>
                   </Link>

@@ -1,0 +1,18 @@
+ALTER TABLE "Product"
+ADD COLUMN "priceOnRequest" BOOLEAN NOT NULL DEFAULT false,
+ADD COLUMN "priceBasisGrams" INTEGER,
+ADD COLUMN "minimumOrderGrams" INTEGER,
+ADD COLUMN "catalogOnly" BOOLEAN NOT NULL DEFAULT false,
+ADD COLUMN "productForm" TEXT,
+ADD COLUMN "originCountry" TEXT,
+ADD COLUMN "grade" TEXT,
+ADD COLUMN "processingMethod" TEXT,
+ADD COLUMN "arabicaPercent" INTEGER,
+ADD COLUMN "robustaPercent" INTEGER,
+ADD COLUMN "body" INTEGER,
+ADD COLUMN "sweetness" INTEGER,
+ADD COLUMN "caffeineLevel" INTEGER,
+ADD COLUMN "aiProfile" TEXT,
+ADD COLUMN "profileConfidence" TEXT,
+ADD COLUMN "researchSourceUrl" TEXT,
+ADD COLUMN "sourceNote" TEXT;

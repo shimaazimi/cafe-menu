@@ -3,6 +3,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 
 import { hashPassword } from "../src/lib/password";
 import { normalizePhone } from "../src/lib/phone";
+import { wholesaleCoffeeProducts } from "./data/wholesale-coffee-products";
 
 if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL is not set (expected a postgresql:// connection string)");
@@ -83,6 +84,7 @@ const products = [
     weightGrams: 1000,
     wholesaleAvailable: true,
   },
+  ...wholesaleCoffeeProducts,
 ];
 
 async function main() {

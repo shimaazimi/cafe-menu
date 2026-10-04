@@ -13,24 +13,24 @@ datasource db {
 }
 
 model Order {
-  id        Int         @id @default(autoincrement())
-  status    String      @default("pending")
+  id         Int         @id @default(autoincrement())
+  status     String      @default("pending")
   totalToman Int
-  note      String?
-  createdAt DateTime    @default(now())
-  items     OrderItem[]
-  user      User?       @relation(fields: [userId], references: [id])
-  userId    Int?
+  note       String?
+  createdAt  DateTime    @default(now())
+  items      OrderItem[]
+  user       User?       @relation(fields: [userId], references: [id])
+  userId     Int?
 }
 
 model OrderItem {
-  id            Int    @id @default(autoincrement())
-  order         Order  @relation(fields: [orderId], references: [id])
-  orderId       Int
-  itemId        String
-  nameFa        String
+  id             Int    @id @default(autoincrement())
+  order          Order  @relation(fields: [orderId], references: [id])
+  orderId        Int
+  itemId         String
+  nameFa         String
   unitPriceToman Int
-  quantity      Int
+  quantity       Int
 }
 
 model Product {
@@ -39,6 +39,7 @@ model Product {
   nameFa             String
   description        String
   priceToman         Int
+  priceOnRequest     Boolean  @default(false)
   compareAtPrice     Int?
   category           String
   stockQuantity      Int      @default(0)
@@ -52,7 +53,23 @@ model Product {
   suitableFor        String[] @default([])
   brewMethods        String[] @default([])
   weightGrams        Int?
+  priceBasisGrams    Int?
+  minimumOrderGrams  Int?
   wholesaleAvailable Boolean  @default(false)
+  catalogOnly        Boolean  @default(false)
+  productForm        String?
+  originCountry      String?
+  grade              String?
+  processingMethod   String?
+  arabicaPercent     Int?
+  robustaPercent     Int?
+  body               Int?
+  sweetness          Int?
+  caffeineLevel      Int?
+  aiProfile          String?
+  profileConfidence  String?
+  researchSourceUrl  String?
+  sourceNote         String?
   createdAt          DateTime @default(now())
 }
 

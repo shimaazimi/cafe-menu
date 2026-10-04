@@ -15,6 +15,8 @@ export const BREW_METHOD_LABELS: Record<string, string> = {
   moka: "موکاپات",
   french_press: "فرنچ‌پرس",
   filter: "قهوه دمی",
+  turkish: "قهوه ترک",
+  instant: "فوری",
 };
 
 export const SUITABLE_FOR_LABELS: Record<string, string> = {
@@ -30,6 +32,14 @@ export const FLAVOR_NOTE_LABELS: Record<string, string> = {
   fruity: "میوه‌ای",
   floral: "گلی",
   spicy: "ادویه‌ای",
+  citrus: "مرکباتی",
+  berry: "بری و میوه قرمز",
+  dried_fruit: "میوه خشک",
+  cocoa: "کاکائویی",
+  dark_chocolate: "شکلات تلخ",
+  earthy: "خاکی",
+  woody: "چوبی",
+  phenolic: "فنولیک",
 };
 
 export function splitList(value: FormDataEntryValue | null) {

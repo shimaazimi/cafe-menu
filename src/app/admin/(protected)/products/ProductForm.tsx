@@ -13,6 +13,7 @@ interface ProductValues {
   nameFa: string;
   description: string;
   priceToman: number;
+  priceOnRequest: boolean;
   compareAtPrice: number | null;
   category: string;
   stockQuantity: number;
@@ -26,7 +27,23 @@ interface ProductValues {
   suitableFor: string[];
   brewMethods: string[];
   weightGrams: number | null;
+  priceBasisGrams: number | null;
+  minimumOrderGrams: number | null;
   wholesaleAvailable: boolean;
+  catalogOnly: boolean;
+  productForm: string | null;
+  originCountry: string | null;
+  grade: string | null;
+  processingMethod: string | null;
+  arabicaPercent: number | null;
+  robustaPercent: number | null;
+  body: number | null;
+  sweetness: number | null;
+  caffeineLevel: number | null;
+  aiProfile: string | null;
+  profileConfidence: string | null;
+  researchSourceUrl: string | null;
+  sourceNote: string | null;
 }
 
 const inputClass =
@@ -72,6 +89,11 @@ export default function ProductForm({ product }: { product?: ProductValues }) {
         required
         className={inputClass}
       />
+
+      <label className="font-farsi text-espresso flex items-center gap-2 text-sm">
+        <input type="checkbox" name="priceOnRequest" defaultChecked={product?.priceOnRequest} />
+        قیمت فقط با استعلام اعلام شود
+      </label>
 
       <textarea
         name="description"
@@ -146,11 +168,44 @@ export default function ProductForm({ product }: { product?: ProductValues }) {
           <option value="dark">تیره</option>
         </select>
 
+        <select name="productForm" defaultValue={product?.productForm ?? ""} className={inputClass}>
+          <option value="">شکل محصول</option>
+          <option value="whole_bean">دانه</option>
+          <option value="ground">آسیاب‌شده</option>
+          <option value="instant">فوری</option>
+        </select>
+
+        <input
+          name="originCountry"
+          placeholder="کشور مبدأ: Ethiopia"
+          defaultValue={product?.originCountry ?? ""}
+          className={inputClass}
+        />
+        <input
+          name="grade"
+          placeholder="گرید: PB, AA, G1"
+          defaultValue={product?.grade ?? ""}
+          className={inputClass}
+        />
+        <input
+          name="processingMethod"
+          placeholder="فرآوری: natural, washed"
+          defaultValue={product?.processingMethod ?? ""}
+          className={inputClass}
+        />
+
         {[
           ["strength", "شدت (۱ تا ۵)", product?.strength],
           ["bitterness", "تلخی (۱ تا ۵)", product?.bitterness],
           ["acidity", "اسیدیته (۱ تا ۵)", product?.acidity],
+          ["body", "بادی (۱ تا ۵)", product?.body],
+          ["sweetness", "شیرینی (۱ تا ۵)", product?.sweetness],
+          ["caffeineLevel", "کافئین (۱ تا ۵)", product?.caffeineLevel],
           ["weightGrams", "وزن (گرم)", product?.weightGrams],
+          ["priceBasisGrams", "مبنای قیمت (گرم)", product?.priceBasisGrams],
+          ["minimumOrderGrams", "حداقل سفارش (گرم)", product?.minimumOrderGrams],
+          ["arabicaPercent", "درصد عربیکا", product?.arabicaPercent],
+          ["robustaPercent", "درصد روبوستا", product?.robustaPercent],
         ].map(([name, placeholder, value]) => (
           <input
             key={String(name)}
@@ -158,8 +213,20 @@ export default function ProductForm({ product }: { product?: ProductValues }) {
             name={String(name)}
             placeholder={String(placeholder)}
             defaultValue={value ?? ""}
-            min={name === "weightGrams" ? 1 : 1}
-            max={name === "weightGrams" ? undefined : 5}
+            min={
+              ["weightGrams", "priceBasisGrams", "minimumOrderGrams"].includes(String(name))
+                ? 1
+                : ["arabicaPercent", "robustaPercent"].includes(String(name))
+                  ? 0
+                  : 1
+            }
+            max={
+              ["weightGrams", "priceBasisGrams", "minimumOrderGrams"].includes(String(name))
+                ? undefined
+                : ["arabicaPercent", "robustaPercent"].includes(String(name))
+                  ? 100
+                  : 5
+            }
             className={inputClass}
           />
         ))}
@@ -168,6 +235,34 @@ export default function ProductForm({ product }: { product?: ProductValues }) {
           name="flavorNotes"
           placeholder="طعم‌ها با ویرگول: chocolate, nuts"
           defaultValue={product?.flavorNotes.join(", ")}
+          className={`${inputClass} sm:col-span-2`}
+        />
+
+        <textarea
+          name="aiProfile"
+          placeholder="راهنمای دقیق برای پیشنهادگر هوشمند"
+          rows={4}
+          defaultValue={product?.aiProfile ?? ""}
+          className={`${inputClass} sm:col-span-2`}
+        />
+        <input
+          name="profileConfidence"
+          placeholder="سطح اطمینان داده"
+          defaultValue={product?.profileConfidence ?? ""}
+          className={inputClass}
+        />
+        <input
+          type="url"
+          name="researchSourceUrl"
+          placeholder="لینک منبع تحقیق"
+          defaultValue={product?.researchSourceUrl ?? ""}
+          className={inputClass}
+        />
+        <textarea
+          name="sourceNote"
+          placeholder="یادداشت منبع قیمت و محصول"
+          rows={3}
+          defaultValue={product?.sourceNote ?? ""}
           className={`${inputClass} sm:col-span-2`}
         />
         <input
@@ -190,6 +285,11 @@ export default function ProductForm({ product }: { product?: ProductValues }) {
             defaultChecked={product?.wholesaleAvailable}
           />
           امکان فروش همکاری
+        </label>
+
+        <label className="font-farsi text-espresso flex items-center gap-2 text-sm sm:col-span-2">
+          <input type="checkbox" name="catalogOnly" defaultChecked={product?.catalogOnly} />
+          فقط کاتالوگ/استعلام (غیرقابل افزودن مستقیم به سبد)
         </label>
       </div>
 

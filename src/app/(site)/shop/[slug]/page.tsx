@@ -12,7 +12,7 @@ import {
   SUITABLE_FOR_LABELS,
   intensityDots,
 } from "@/lib/coffeeProduct";
-import { formatToman } from "@/lib/price";
+import { formatToman, toPersianDigits } from "@/lib/price";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
@@ -22,7 +22,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const product = await prisma.product.findUnique({ where: { slug } });
   if (!product) notFound();
 
-  const isCoffee = product.category === "beans";
+  const isCoffee = Boolean(product.productForm || product.coffeeType);
 
   return (
     <main dir="rtl" className="bg-latte min-h-screen px-5 py-8 pb-24 md:px-10 md:py-14">
@@ -73,6 +73,22 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                 />
                 <Stat label="شدت" value={intensityDots(product.strength)} />
                 <Stat label="تلخی" value={intensityDots(product.bitterness)} />
+                <Stat label="بادی" value={intensityDots(product.body)} />
+                <Stat label="کافئین" value={intensityDots(product.caffeineLevel)} />
+                {product.originCountry && <Stat label="مبدأ" value={product.originCountry} />}
+                {product.grade && <Stat label="گرید" value={product.grade} />}
+                {product.arabicaPercent !== null && product.robustaPercent !== null && (
+                  <Stat
+                    label="ترکیب"
+                    value={`${toPersianDigits(product.arabicaPercent)}٪ عربیکا / ${toPersianDigits(product.robustaPercent)}٪ روبوستا`}
+                  />
+                )}
+                {product.minimumOrderGrams && (
+                  <Stat
+                    label="حداقل سفارش"
+                    value={`${toPersianDigits(product.minimumOrderGrams / 1000)} کیلوگرم`}
+                  />
+                )}
               </div>
             )}
 
@@ -94,15 +110,27 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
             <div className="mt-auto pt-8">
               <p className="font-farsi text-espresso mb-4 text-xl font-black">
-                {formatToman(product.priceToman)}
+                {product.priceOnRequest ? "استعلام قیمت" : formatToman(product.priceToman)}
+                {!product.priceOnRequest && product.priceBasisGrams === 1000 && (
+                  <span className="text-clay mr-2 text-xs font-normal">برای هر کیلو</span>
+                )}
               </p>
-              <AddToCartButton
-                id={product.slug}
-                name={product.nameFa}
-                price={formatToman(product.priceToman)}
-                image={product.imageUrl}
-                wide
-              />
+              {product.catalogOnly || product.priceOnRequest ? (
+                <Link
+                  href="/business"
+                  className="font-farsi bg-gold text-ink hover:bg-gold-light flex w-full items-center justify-center rounded-full px-6 py-3 font-bold transition"
+                >
+                  استعلام خرید عمده
+                </Link>
+              ) : (
+                <AddToCartButton
+                  id={product.slug}
+                  name={product.nameFa}
+                  price={formatToman(product.priceToman)}
+                  image={product.imageUrl}
+                  wide
+                />
+              )}
             </div>
           </div>
         </div>
