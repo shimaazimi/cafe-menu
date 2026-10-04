@@ -1,9 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { Bean, Box, Coffee, Minus, Package, Plus, type LucideIcon } from "lucide-react";
+import Link from "next/link";
+import { Bean, Box, Coffee, Package, type LucideIcon } from "lucide-react";
 
-import { useCart } from "@/context/CartContext";
+import AddToCartButton from "@/components/shop/AddToCartButton";
+import { BREW_METHOD_LABELS, COFFEE_TYPE_LABELS } from "@/lib/coffeeProduct";
 
 const CATEGORY_ICONS: Record<string, LucideIcon> = {
   mug: Coffee,
@@ -20,6 +22,8 @@ interface Props {
   discountPercent?: string;
   category: string;
   imageUrl?: string | null;
+  coffeeType?: string | null;
+  brewMethods?: string[];
 }
 
 export default function ProductCard({
@@ -31,17 +35,20 @@ export default function ProductCard({
   discountPercent,
   category,
   imageUrl,
+  coffeeType,
+  brewMethods = [],
 }: Props) {
   const Icon = CATEGORY_ICONS[category] ?? Package;
-  const { getQuantity, add, remove } = useCart();
-  const quantity = getQuantity(id);
 
   return (
     <div
       dir="rtl"
       className="border-gold/15 flex flex-col rounded-2xl border bg-white p-3 shadow-sm md:p-4"
     >
-      <div className="bg-latte border-gold/15 relative mb-3 flex h-24 items-center justify-center overflow-hidden rounded-xl border md:h-32">
+      <Link
+        href={`/shop/${id}`}
+        className="bg-latte border-gold/15 relative mb-3 flex h-24 items-center justify-center overflow-hidden rounded-xl border md:h-32"
+      >
         {imageUrl ? (
           <Image
             src={imageUrl}
@@ -59,11 +66,29 @@ export default function ProductCard({
             {discountPercent}
           </span>
         )}
-      </div>
+      </Link>
 
-      <h3 className="font-farsi text-espresso text-sm leading-6 font-semibold md:text-base">
-        {name}
-      </h3>
+      <Link href={`/shop/${id}`}>
+        <h3 className="font-farsi text-espresso text-sm leading-6 font-semibold md:text-base">
+          {name}
+        </h3>
+      </Link>
+
+      {coffeeType && (
+        <div className="my-1.5 flex flex-wrap gap-1">
+          <span className="bg-parchment text-clay rounded-full px-2 py-0.5 text-[10px] font-bold">
+            {COFFEE_TYPE_LABELS[coffeeType] ?? coffeeType}
+          </span>
+          {brewMethods.slice(0, 1).map((method) => (
+            <span
+              key={method}
+              className="bg-parchment text-clay rounded-full px-2 py-0.5 text-[10px]"
+            >
+              {BREW_METHOD_LABELS[method] ?? method}
+            </span>
+          ))}
+        </div>
+      )}
 
       <p className="font-farsi text-clay mb-2 line-clamp-2 text-xs leading-5 md:text-sm">
         {description}
@@ -77,35 +102,7 @@ export default function ProductCard({
           <span className="text-espresso text-xs font-bold">{price}</span>
         </div>
 
-        {quantity === 0 ? (
-          <button
-            onClick={() => add({ id, name, price })}
-            aria-label="افزودن به سبد خرید"
-            className="bg-gold text-ink flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition active:scale-95"
-          >
-            <Plus className="h-4 w-4" strokeWidth={2} />
-          </button>
-        ) : (
-          <div className="bg-espresso text-latte flex shrink-0 items-center gap-2 rounded-full px-1.5 py-1">
-            <button
-              onClick={() => add({ id, name, price })}
-              aria-label="افزایش تعداد"
-              className="flex h-5 w-5 items-center justify-center"
-            >
-              <Plus className="h-3.5 w-3.5" strokeWidth={2} />
-            </button>
-
-            <span className="min-w-3 text-center text-xs font-semibold">{quantity}</span>
-
-            <button
-              onClick={() => remove(id)}
-              aria-label="کاهش تعداد"
-              className="flex h-5 w-5 items-center justify-center"
-            >
-              <Minus className="h-3.5 w-3.5" strokeWidth={2} />
-            </button>
-          </div>
-        )}
+        <AddToCartButton id={id} name={name} price={price} image={imageUrl} />
       </div>
     </div>
   );

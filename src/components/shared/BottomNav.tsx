@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, LayoutGrid, ShoppingCart, User } from "lucide-react";
+import { Home, ShoppingBag, ShoppingCart, Sparkles, User } from "lucide-react";
 
 import { useCart } from "@/context/CartContext";
 
@@ -21,9 +21,15 @@ export default function BottomNav({ isLoggedIn }: BottomNavProps) {
     { href: "/", label: "خانه", icon: Home, active: pathname === "/" },
     {
       href: "/shop",
-      label: "دسته‌ها",
-      icon: LayoutGrid,
-      active: pathname === "/shop",
+      label: "فروشگاه",
+      icon: ShoppingBag,
+      active: pathname.startsWith("/shop"),
+    },
+    {
+      href: "/coffee-finder",
+      label: "انتخاب",
+      icon: Sparkles,
+      active: pathname === "/coffee-finder",
     },
     { href: "/cart", label: "سبد", icon: ShoppingCart, active: false, badge: totalItems },
     {
@@ -37,7 +43,7 @@ export default function BottomNav({ isLoggedIn }: BottomNavProps) {
   return (
     <nav
       dir="rtl"
-      className="border-gold/20 fixed inset-x-0 bottom-0 z-20 flex items-stretch justify-around border-t bg-white/95 backdrop-blur md:hidden"
+      className="site-bottom-nav border-gold/20 fixed inset-x-0 bottom-0 z-20 flex items-stretch justify-around border-t bg-white/95 backdrop-blur md:hidden"
     >
       {items.map((item) => (
         <Link

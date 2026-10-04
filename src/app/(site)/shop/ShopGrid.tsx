@@ -14,6 +14,8 @@ interface Product {
   discountPercent?: string;
   category: string;
   imageUrl?: string | null;
+  coffeeType?: string | null;
+  brewMethods: string[];
 }
 
 interface Props {
@@ -77,6 +79,8 @@ export default function ShopGrid({ products, categoryLabels }: Props) {
             discountPercent={product.discountPercent}
             category={product.category}
             imageUrl={product.imageUrl}
+            coffeeType={product.coffeeType}
+            brewMethods={product.brewMethods}
           />
         ))}
       </div>

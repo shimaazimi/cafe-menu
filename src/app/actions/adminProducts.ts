@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { getCurrentAdmin } from "@/lib/adminAuth";
 import { PRODUCT_CATEGORIES } from "@/lib/productCategories";
 import { deleteProductPhoto, saveProductPhoto } from "@/lib/productPhoto";
+import { splitList } from "@/lib/coffeeProduct";
 
 function generateSlug(category: string) {
   return `${category}-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
@@ -18,7 +19,22 @@ interface ParsedFields {
   compareAtPrice: number | null;
   category: string;
   stockQuantity: number;
+  coffeeType: string | null;
+  roastLevel: string | null;
+  strength: number | null;
+  bitterness: number | null;
+  acidity: number | null;
+  flavorNotes: string[];
+  suitableFor: string[];
+  brewMethods: string[];
+  weightGrams: number | null;
+  wholesaleAvailable: boolean;
   photo: File | null;
+}
+
+function optionalNumber(formData: FormData, name: string) {
+  const raw = String(formData.get(name) ?? "").trim();
+  return raw ? Number(raw) : null;
 }
 
 function parseFields(formData: FormData): ParsedFields {
@@ -29,6 +45,16 @@ function parseFields(formData: FormData): ParsedFields {
   const compareAtPrice = compareAtPriceRaw ? Number(compareAtPriceRaw) : null;
   const category = String(formData.get("category") ?? "");
   const stockQuantity = Number(formData.get("stockQuantity"));
+  const coffeeType = String(formData.get("coffeeType") ?? "").trim() || null;
+  const roastLevel = String(formData.get("roastLevel") ?? "").trim() || null;
+  const strength = optionalNumber(formData, "strength");
+  const bitterness = optionalNumber(formData, "bitterness");
+  const acidity = optionalNumber(formData, "acidity");
+  const flavorNotes = splitList(formData.get("flavorNotes"));
+  const suitableFor = splitList(formData.get("suitableFor"));
+  const brewMethods = splitList(formData.get("brewMethods"));
+  const weightGrams = optionalNumber(formData, "weightGrams");
+  const wholesaleAvailable = formData.get("wholesaleAvailable") === "on";
   const photoValue = formData.get("photo");
   const photo = photoValue instanceof File && photoValue.size > 0 ? photoValue : null;
 
@@ -47,8 +73,38 @@ function parseFields(formData: FormData): ParsedFields {
   if (compareAtPrice !== null && (!Number.isFinite(compareAtPrice) || compareAtPrice < 0)) {
     throw new Error("قیمت قبل از تخفیف نامعتبر است");
   }
+  for (const [label, value] of [
+    ["شدت", strength],
+    ["تلخی", bitterness],
+    ["اسیدیته", acidity],
+  ] as const) {
+    if (value !== null && (!Number.isInteger(value) || value < 1 || value > 5)) {
+      throw new Error(`${label} باید عددی بین ۱ تا ۵ باشد`);
+    }
+  }
+  if (weightGrams !== null && (!Number.isInteger(weightGrams) || weightGrams <= 0)) {
+    throw new Error("وزن نامعتبر است");
+  }
 
-  return { nameFa, description, priceToman, compareAtPrice, category, stockQuantity, photo };
+  return {
+    nameFa,
+    description,
+    priceToman,
+    compareAtPrice,
+    category,
+    stockQuantity,
+    coffeeType,
+    roastLevel,
+    strength,
+    bitterness,
+    acidity,
+    flavorNotes,
+    suitableFor,
+    brewMethods,
+    weightGrams,
+    wholesaleAvailable,
+    photo,
+  };
 }
 
 async function requireAdmin() {
@@ -80,6 +136,16 @@ export async function createProduct(formData: FormData) {
       category: fields.category,
       stockQuantity: fields.stockQuantity,
       imageUrl,
+      coffeeType: fields.coffeeType,
+      roastLevel: fields.roastLevel,
+      strength: fields.strength,
+      bitterness: fields.bitterness,
+      acidity: fields.acidity,
+      flavorNotes: fields.flavorNotes,
+      suitableFor: fields.suitableFor,
+      brewMethods: fields.brewMethods,
+      weightGrams: fields.weightGrams,
+      wholesaleAvailable: fields.wholesaleAvailable,
     },
   });
 
@@ -112,6 +178,16 @@ export async function updateProduct(productId: number, formData: FormData) {
       category: fields.category,
       stockQuantity: fields.stockQuantity,
       imageUrl,
+      coffeeType: fields.coffeeType,
+      roastLevel: fields.roastLevel,
+      strength: fields.strength,
+      bitterness: fields.bitterness,
+      acidity: fields.acidity,
+      flavorNotes: fields.flavorNotes,
+      suitableFor: fields.suitableFor,
+      brewMethods: fields.brewMethods,
+      weightGrams: fields.weightGrams,
+      wholesaleAvailable: fields.wholesaleAvailable,
     },
   });
 

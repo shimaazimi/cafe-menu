@@ -34,16 +34,26 @@ model OrderItem {
 }
 
 model Product {
-  id              Int      @id @default(autoincrement())
-  slug            String   @unique
-  nameFa          String
-  description     String
-  priceToman      Int
-  compareAtPrice  Int?
-  category        String
-  stockQuantity   Int      @default(0)
-  imageUrl        String?
-  createdAt       DateTime @default(now())
+  id                 Int      @id @default(autoincrement())
+  slug               String   @unique
+  nameFa             String
+  description        String
+  priceToman         Int
+  compareAtPrice     Int?
+  category           String
+  stockQuantity      Int      @default(0)
+  imageUrl           String?
+  coffeeType         String?
+  roastLevel         String?
+  strength           Int?
+  bitterness         Int?
+  acidity            Int?
+  flavorNotes        String[] @default([])
+  suitableFor        String[] @default([])
+  brewMethods        String[] @default([])
+  weightGrams        Int?
+  wholesaleAvailable Boolean  @default(false)
+  createdAt          DateTime @default(now())
 }
 
 model User {

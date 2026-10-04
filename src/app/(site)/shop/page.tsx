@@ -3,6 +3,8 @@ import { Suspense } from "react";
 import { prisma } from "@/lib/prisma";
 import { formatDiscountPercent, formatToman } from "@/lib/price";
 import { PRODUCT_CATEGORY_LABELS } from "@/lib/productCategories";
+import Link from "next/link";
+import { Sparkles } from "lucide-react";
 import ShopGrid from "./ShopGrid";
 
 export const dynamic = "force-dynamic";
@@ -20,6 +22,12 @@ export default async function ShopPage() {
         <p className="font-farsi text-latte/60 mx-auto mt-2 max-w-xs text-sm md:max-w-none md:text-base">
           محصولات با کیفیت برای خانه و محل کار
         </p>
+        <Link
+          href="/coffee-finder"
+          className="font-farsi border-gold/30 text-gold-light mt-5 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-bold"
+        >
+          <Sparkles className="h-3.5 w-3.5" /> برای انتخاب قهوه کمک می‌خواهم
+        </Link>
       </div>
 
       <div className="divider-ornate" aria-hidden />
@@ -44,6 +52,8 @@ export default async function ShopPage() {
                   : undefined,
                 category: product.category,
                 imageUrl: product.imageUrl,
+                coffeeType: product.coffeeType,
+                brewMethods: product.brewMethods,
               };
             })}
             categoryLabels={PRODUCT_CATEGORY_LABELS}

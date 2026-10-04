@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ShoppingBag, BookOpen, LogIn, NotebookText, User } from "lucide-react";
+import { ShoppingBag, BookOpen, LogIn, Sparkles, Store, User } from "lucide-react";
 
 import { getCurrentUser } from "@/lib/auth";
 import { logOut } from "@/app/actions/auth";
@@ -15,7 +15,7 @@ export default async function Header() {
 
   return (
     <>
-      <header dir="rtl" className="bg-ink relative z-20 w-full">
+      <header dir="rtl" className="site-header bg-ink relative z-20 w-full">
         <div className="mx-auto flex max-w-md items-center justify-between px-4 py-3 md:max-w-4xl md:px-8 md:py-4 lg:max-w-6xl lg:px-12">
           <Link href="/" aria-label="کافه فرندز">
             <BrandMark size={34} />
@@ -32,9 +32,14 @@ export default async function Header() {
               <span className="font-farsi hidden text-sm font-semibold md:inline">فروشگاه</span>
             </Link>
 
-            <Link href="/story" aria-label="داستان ما" className={iconBtn}>
-              <NotebookText className="h-4.5 w-4.5" strokeWidth={1.5} />
-              <span className="font-farsi hidden text-sm font-semibold md:inline">داستان ما</span>
+            <Link href="/coffee-finder" aria-label="راهنمای انتخاب قهوه" className={iconBtn}>
+              <Sparkles className="h-4.5 w-4.5" strokeWidth={1.5} />
+              <span className="font-farsi hidden text-sm font-semibold md:inline">انتخاب قهوه</span>
+            </Link>
+
+            <Link href="/business" aria-label="همکاری" className={`${iconBtn} hidden lg:flex`}>
+              <Store className="h-4.5 w-4.5" strokeWidth={1.5} />
+              <span className="font-farsi hidden text-sm font-semibold md:inline">همکاری</span>
             </Link>
 
             <CartNavLink className="text-gold-light/80 hover:text-gold-light" />

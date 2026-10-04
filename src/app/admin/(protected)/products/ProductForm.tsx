@@ -17,6 +17,16 @@ interface ProductValues {
   category: string;
   stockQuantity: number;
   imageUrl: string | null;
+  coffeeType: string | null;
+  roastLevel: string | null;
+  strength: number | null;
+  bitterness: number | null;
+  acidity: number | null;
+  flavorNotes: string[];
+  suitableFor: string[];
+  brewMethods: string[];
+  weightGrams: number | null;
+  wholesaleAvailable: boolean;
 }
 
 const inputClass =
@@ -116,6 +126,72 @@ export default function ProductForm({ product }: { product?: ProductValues }) {
         min={0}
         className={inputClass}
       />
+
+      <div className="border-gold/20 grid gap-4 rounded-2xl border bg-white p-4 sm:grid-cols-2">
+        <p className="font-farsi text-espresso text-sm font-bold sm:col-span-2">
+          مشخصات قهوه (برای دسته دانه قهوه)
+        </p>
+
+        <select name="coffeeType" defaultValue={product?.coffeeType ?? ""} className={inputClass}>
+          <option value="">نوع قهوه</option>
+          <option value="arabica">عربیکا</option>
+          <option value="robusta">روبوستا</option>
+          <option value="blend">ترکیبی</option>
+        </select>
+
+        <select name="roastLevel" defaultValue={product?.roastLevel ?? ""} className={inputClass}>
+          <option value="">درجه رست</option>
+          <option value="light">روشن</option>
+          <option value="medium">متوسط</option>
+          <option value="dark">تیره</option>
+        </select>
+
+        {[
+          ["strength", "شدت (۱ تا ۵)", product?.strength],
+          ["bitterness", "تلخی (۱ تا ۵)", product?.bitterness],
+          ["acidity", "اسیدیته (۱ تا ۵)", product?.acidity],
+          ["weightGrams", "وزن (گرم)", product?.weightGrams],
+        ].map(([name, placeholder, value]) => (
+          <input
+            key={String(name)}
+            type="number"
+            name={String(name)}
+            placeholder={String(placeholder)}
+            defaultValue={value ?? ""}
+            min={name === "weightGrams" ? 1 : 1}
+            max={name === "weightGrams" ? undefined : 5}
+            className={inputClass}
+          />
+        ))}
+
+        <input
+          name="flavorNotes"
+          placeholder="طعم‌ها با ویرگول: chocolate, nuts"
+          defaultValue={product?.flavorNotes.join(", ")}
+          className={`${inputClass} sm:col-span-2`}
+        />
+        <input
+          name="brewMethods"
+          placeholder="روش‌ها: espresso, moka, french_press, filter"
+          defaultValue={product?.brewMethods.join(", ")}
+          className={`${inputClass} sm:col-span-2`}
+        />
+        <input
+          name="suitableFor"
+          placeholder="مناسب برای: home, office, cafe"
+          defaultValue={product?.suitableFor.join(", ")}
+          className={`${inputClass} sm:col-span-2`}
+        />
+
+        <label className="font-farsi text-espresso flex items-center gap-2 text-sm sm:col-span-2">
+          <input
+            type="checkbox"
+            name="wholesaleAvailable"
+            defaultChecked={product?.wholesaleAvailable}
+          />
+          امکان فروش همکاری
+        </label>
+      </div>
 
       <div>
         <label className="font-farsi text-clay mb-2 block text-sm">

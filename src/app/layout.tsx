@@ -18,8 +18,12 @@ const lalezar = Lalezar({
 });
 
 export const metadata: Metadata = {
-  title: "کافه فرندز",
-  description: "منوی دیجیتال کافه فرندز",
+  title: {
+    default: "کافه فرندز | قهوه روزانه از قلب بازار تهران",
+    template: "%s | کافه فرندز",
+  },
+  description:
+    "خرید قهوه عربیکا، روبوستا و اکسسوری با انتخاب ساده و قیمت منطقی از بازار بزرگ تهران.",
 };
 
 export default function RootLayout({
@@ -28,7 +32,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fa" dir="rtl">
+    <html lang="fa" dir="rtl" data-scroll-behavior="smooth">
       <body className={`${vazirmatn.variable} ${lalezar.variable} font-farsi min-h-screen`}>
         {children}
         <ToastViewport />
