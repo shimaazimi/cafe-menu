@@ -10,12 +10,20 @@ interface Product {
   nameFa: string;
   description: string;
   priceFormatted: string;
+  price250g?: number | null;
+  price500g?: number | null;
+  price1000g?: number | null;
+  isAvailable: boolean;
+  catalogOnly: boolean;
+  priceOnRequest: boolean;
   compareAtPriceFormatted?: string;
   discountPercent?: string;
   category: string;
   imageUrl?: string | null;
   coffeeType?: string | null;
   brewMethods: string[];
+  grindingAvailable: boolean;
+  grindOptions: string[];
 }
 
 interface Props {
@@ -75,12 +83,20 @@ export default function ShopGrid({ products, categoryLabels }: Props) {
             name={product.nameFa}
             description={product.description}
             price={product.priceFormatted}
+            price250g={product.price250g}
+            price500g={product.price500g}
+            price1000g={product.price1000g}
+            isAvailable={product.isAvailable}
+            catalogOnly={product.catalogOnly}
+            priceOnRequest={product.priceOnRequest}
             compareAtPrice={product.compareAtPriceFormatted}
             discountPercent={product.discountPercent}
             category={product.category}
             imageUrl={product.imageUrl}
             coffeeType={product.coffeeType}
             brewMethods={product.brewMethods}
+            grindingAvailable={product.grindingAvailable}
+            grindOptions={product.grindOptions}
           />
         ))}
       </div>

@@ -1,12 +1,14 @@
 import { prisma } from "@/lib/prisma";
 import CoffeeFinder from "./CoffeeFinder";
+import { WEIGHT_PRICED_CATEGORIES } from "@/lib/productPackages";
 
 export const dynamic = "force-dynamic";
 
 export default async function CoffeeFinderPage() {
   const products = await prisma.product.findMany({
     where: {
-      OR: [{ category: "beans" }, { category: "ground-coffee" }, { category: "instant-coffee" }],
+      category: { in: [...WEIGHT_PRICED_CATEGORIES] },
+      isAvailable: true,
     },
     orderBy: { id: "asc" },
   });
@@ -30,6 +32,12 @@ export default async function CoffeeFinderPage() {
           nameFa: product.nameFa,
           description: product.description,
           priceToman: product.priceToman,
+          compareAtPrice: product.compareAtPrice,
+          category: product.category,
+          price250g: product.price250g,
+          price500g: product.price500g,
+          price1000g: product.price1000g,
+          isAvailable: product.isAvailable,
           imageUrl: product.imageUrl,
           coffeeType: product.coffeeType,
           strength: product.strength,
@@ -45,6 +53,8 @@ export default async function CoffeeFinderPage() {
           flavorNotes: product.flavorNotes,
           suitableFor: product.suitableFor,
           brewMethods: product.brewMethods,
+          grindingAvailable: product.grindingAvailable,
+          grindOptions: product.grindOptions,
         }))}
       />
     </main>

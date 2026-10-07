@@ -29,9 +29,17 @@ export default async function ProfilePage() {
   const orders = rawOrders.map((order) => ({
     id: order.id,
     status: order.status,
+    paymentStatus: order.paymentStatus,
     totalFormatted: formatToman(order.totalToman),
     dateFormatted: formatJalaliDate(order.createdAt),
-    items: order.items.map((item) => ({ nameFa: item.nameFa, quantity: item.quantity })),
+    address:
+      order.province && order.city && order.postalAddress
+        ? `${order.province}، ${order.city}، ${order.postalAddress}`
+        : null,
+    items: order.items.map((item) => ({
+      nameFa: item.grindOption ? `${item.nameFa} (${item.grindOption})` : item.nameFa,
+      quantity: item.quantity,
+    })),
   }));
 
   return (

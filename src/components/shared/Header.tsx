@@ -42,6 +42,10 @@ export default async function Header() {
               <span className="font-farsi hidden text-sm font-semibold md:inline">همکاری</span>
             </Link>
 
+            <Link href="/about" aria-label="درباره ما" className={`${iconBtn} hidden xl:flex`}>
+              <span className="font-farsi text-sm font-semibold">درباره ما</span>
+            </Link>
+
             <CartNavLink className="text-gold-light/80 hover:text-gold-light" />
 
             {user ? (

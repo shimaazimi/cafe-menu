@@ -7,6 +7,8 @@ import { getCurrentAdmin } from "@/lib/adminAuth";
 import { PRODUCT_CATEGORIES } from "@/lib/productCategories";
 import { deleteProductPhoto, saveProductPhoto } from "@/lib/productPhoto";
 import { splitList } from "@/lib/coffeeProduct";
+import { usesPackagePricing } from "@/lib/productPackages";
+import { normalizeGrindOptions } from "@/lib/grindOptions";
 
 function generateSlug(category: string) {
   return `${category}-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
@@ -28,7 +30,13 @@ interface ParsedFields {
   flavorNotes: string[];
   suitableFor: string[];
   brewMethods: string[];
+  grindingAvailable: boolean;
+  grindOptions: string[];
   weightGrams: number | null;
+  isAvailable: boolean;
+  price250g: number | null;
+  price500g: number | null;
+  price1000g: number | null;
   priceBasisGrams: number | null;
   minimumOrderGrams: number | null;
   wholesaleAvailable: boolean;
@@ -74,7 +82,16 @@ function parseFields(formData: FormData): ParsedFields {
   const flavorNotes = splitList(formData.get("flavorNotes"));
   const suitableFor = splitList(formData.get("suitableFor"));
   const brewMethods = splitList(formData.get("brewMethods"));
+  const grindingAvailable = formData.get("grindingAvailable") === "on";
+  const grindOptions = normalizeGrindOptions([
+    ...formData.getAll("grindOptions").map(String),
+    String(formData.get("customGrindOptions") ?? ""),
+  ]);
   const weightGrams = optionalNumber(formData, "weightGrams");
+  const isAvailable = !usesPackagePricing(category) || formData.get("isAvailable") === "on";
+  const price250g = optionalNumber(formData, "price250g");
+  const price500g = optionalNumber(formData, "price500g");
+  const price1000g = optionalNumber(formData, "price1000g");
   const priceBasisGrams = optionalNumber(formData, "priceBasisGrams");
   const minimumOrderGrams = optionalNumber(formData, "minimumOrderGrams");
   const arabicaPercent = optionalNumber(formData, "arabicaPercent");
@@ -122,6 +139,17 @@ function parseFields(formData: FormData): ParsedFields {
   if (weightGrams !== null && (!Number.isInteger(weightGrams) || weightGrams <= 0)) {
     throw new Error("وزن نامعتبر است");
   }
+  if (usesPackagePricing(category) && !priceOnRequest) {
+    for (const [label, value] of [
+      ["قیمت ۲۵۰ گرم", price250g],
+      ["قیمت ۵۰۰ گرم", price500g],
+      ["قیمت یک کیلو", price1000g],
+    ] as const) {
+      if (value === null || !Number.isInteger(value) || value <= 0) {
+        throw new Error(`${label} باید یک عدد مثبت باشد`);
+      }
+    }
+  }
   for (const [label, value] of [
     ["مبنای قیمت", priceBasisGrams],
     ["حداقل سفارش", minimumOrderGrams],
@@ -145,6 +173,9 @@ function parseFields(formData: FormData): ParsedFields {
   ) {
     throw new Error("مجموع درصد عربیکا و روبوستا باید ۱۰۰ باشد");
   }
+  if (grindingAvailable && grindOptions.length === 0) {
+    throw new Error("برای محصول دارای آسیاب، حداقل یک نوع آسیاب انتخاب کنید");
+  }
 
   return {
     nameFa,
@@ -165,7 +196,13 @@ function parseFields(formData: FormData): ParsedFields {
     flavorNotes,
     suitableFor,
     brewMethods,
+    grindingAvailable,
+    grindOptions,
     weightGrams,
+    isAvailable,
+    price250g,
+    price500g,
+    price1000g,
     priceBasisGrams,
     minimumOrderGrams,
     arabicaPercent,
@@ -225,7 +262,13 @@ export async function createProduct(formData: FormData) {
       flavorNotes: fields.flavorNotes,
       suitableFor: fields.suitableFor,
       brewMethods: fields.brewMethods,
+      grindingAvailable: fields.grindingAvailable,
+      grindOptions: fields.grindingAvailable ? fields.grindOptions : [],
       weightGrams: fields.weightGrams,
+      isAvailable: fields.isAvailable,
+      price250g: fields.price250g,
+      price500g: fields.price500g,
+      price1000g: fields.price1000g,
       priceBasisGrams: fields.priceBasisGrams,
       minimumOrderGrams: fields.minimumOrderGrams,
       arabicaPercent: fields.arabicaPercent,
@@ -284,7 +327,13 @@ export async function updateProduct(productId: number, formData: FormData) {
       flavorNotes: fields.flavorNotes,
       suitableFor: fields.suitableFor,
       brewMethods: fields.brewMethods,
+      grindingAvailable: fields.grindingAvailable,
+      grindOptions: fields.grindingAvailable ? fields.grindOptions : [],
       weightGrams: fields.weightGrams,
+      isAvailable: fields.isAvailable,
+      price250g: fields.price250g,
+      price500g: fields.price500g,
+      price1000g: fields.price1000g,
       priceBasisGrams: fields.priceBasisGrams,
       minimumOrderGrams: fields.minimumOrderGrams,
       arabicaPercent: fields.arabicaPercent,

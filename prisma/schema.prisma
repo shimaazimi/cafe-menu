@@ -13,24 +13,38 @@ datasource db {
 }
 
 model Order {
-  id         Int         @id @default(autoincrement())
-  status     String      @default("pending")
-  totalToman Int
-  note       String?
-  createdAt  DateTime    @default(now())
-  items      OrderItem[]
-  user       User?       @relation(fields: [userId], references: [id])
-  userId     Int?
+  id                Int         @id @default(autoincrement())
+  status            String      @default("pending")
+  subtotalToman     Int         @default(0)
+  shippingCostToman Int         @default(0)
+  totalToman        Int
+  note              String?
+  recipientName     String?
+  recipientPhone    String?
+  province          String?
+  city              String?
+  postalAddress     String?
+  postalCode        String?
+  shippingMethod    String      @default("standard")
+  paymentStatus     String      @default("pending")
+  paymentMethod     String      @default("mock_gateway")
+  paymentReference  String?
+  paidAt            DateTime?
+  createdAt         DateTime    @default(now())
+  items             OrderItem[]
+  user              User?       @relation(fields: [userId], references: [id])
+  userId            Int?
 }
 
 model OrderItem {
-  id             Int    @id @default(autoincrement())
-  order          Order  @relation(fields: [orderId], references: [id])
+  id             Int     @id @default(autoincrement())
+  order          Order   @relation(fields: [orderId], references: [id])
   orderId        Int
   itemId         String
   nameFa         String
   unitPriceToman Int
   quantity       Int
+  grindOption    String?
 }
 
 model Product {
@@ -52,7 +66,13 @@ model Product {
   flavorNotes        String[] @default([])
   suitableFor        String[] @default([])
   brewMethods        String[] @default([])
+  grindingAvailable  Boolean  @default(false)
+  grindOptions       String[] @default([])
   weightGrams        Int?
+  isAvailable        Boolean  @default(true)
+  price250g          Int?
+  price500g          Int?
+  price1000g         Int?
   priceBasisGrams    Int?
   minimumOrderGrams  Int?
   wholesaleAvailable Boolean  @default(false)

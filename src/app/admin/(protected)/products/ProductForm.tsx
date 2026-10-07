@@ -7,6 +7,8 @@ import Image from "next/image";
 import { createProduct, updateProduct } from "@/app/actions/adminProducts";
 import { PRODUCT_CATEGORY_LABELS } from "@/lib/productCategories";
 import { toast } from "@/lib/toastStore";
+import { usesPackagePricing } from "@/lib/productPackages";
+import { GRIND_OPTION_PRESETS } from "@/lib/grindOptions";
 
 interface ProductValues {
   id: number;
@@ -26,7 +28,13 @@ interface ProductValues {
   flavorNotes: string[];
   suitableFor: string[];
   brewMethods: string[];
+  grindingAvailable: boolean;
+  grindOptions: string[];
   weightGrams: number | null;
+  isAvailable: boolean;
+  price250g: number | null;
+  price500g: number | null;
+  price1000g: number | null;
   priceBasisGrams: number | null;
   minimumOrderGrams: number | null;
   wholesaleAvailable: boolean;
@@ -54,6 +62,9 @@ export default function ProductForm({ product }: { product?: ProductValues }) {
   const formRef = useRef<HTMLFormElement>(null);
   const [isPending, startTransition] = useTransition();
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState(product?.category ?? "");
+  const [grindingAvailable, setGrindingAvailable] = useState(product?.grindingAvailable ?? false);
+  const hasPackagePricing = usesPackagePricing(selectedCategory);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -106,7 +117,8 @@ export default function ProductForm({ product }: { product?: ProductValues }) {
 
       <select
         name="category"
-        defaultValue={product?.category ?? ""}
+        value={selectedCategory}
+        onChange={(event) => setSelectedCategory(event.target.value)}
         required
         className={inputClass}
       >
@@ -130,6 +142,42 @@ export default function ProductForm({ product }: { product?: ProductValues }) {
         className={inputClass}
       />
 
+      {hasPackagePricing && (
+        <fieldset className="border-gold/25 rounded-2xl border bg-white p-4">
+          <legend className="font-farsi text-espresso px-2 text-sm font-bold">
+            وضعیت فروش و قیمت بسته‌ها
+          </legend>
+          <label className="font-farsi text-espresso mb-4 flex items-center gap-2 text-sm font-bold">
+            <input
+              type="checkbox"
+              name="isAvailable"
+              defaultChecked={product?.isAvailable ?? true}
+            />
+            محصول موجود است
+          </label>
+          <div className="grid gap-3 sm:grid-cols-3">
+            {[
+              ["price250g", "قیمت ۲۵۰ گرم", product?.price250g],
+              ["price500g", "قیمت ۵۰۰ گرم", product?.price500g],
+              ["price1000g", "قیمت ۱ کیلو", product?.price1000g],
+            ].map(([name, placeholder, value]) => (
+              <input
+                key={String(name)}
+                type="number"
+                name={String(name)}
+                placeholder={`${String(placeholder)} (تومان)`}
+                defaultValue={value ?? ""}
+                min={1}
+                className={inputClass}
+              />
+            ))}
+          </div>
+          <p className="font-farsi text-clay mt-2 text-xs">
+            هر وزن قیمت مستقل دارد و مستقیماً در فروشگاه و پیشنهاد قهوه استفاده می‌شود.
+          </p>
+        </fieldset>
+      )}
+
       <input
         type="number"
         name="compareAtPrice"
@@ -139,15 +187,19 @@ export default function ProductForm({ product }: { product?: ProductValues }) {
         className={inputClass}
       />
 
-      <input
-        type="number"
-        name="stockQuantity"
-        placeholder="تعداد موجود"
-        defaultValue={product?.stockQuantity ?? 0}
-        required
-        min={0}
-        className={inputClass}
-      />
+      {hasPackagePricing ? (
+        <input type="hidden" name="stockQuantity" value="0" />
+      ) : (
+        <input
+          type="number"
+          name="stockQuantity"
+          placeholder="تعداد موجود"
+          defaultValue={product?.stockQuantity ?? 0}
+          required
+          min={0}
+          className={inputClass}
+        />
+      )}
 
       <div className="border-gold/20 grid gap-4 rounded-2xl border bg-white p-4 sm:grid-cols-2">
         <p className="font-farsi text-espresso text-sm font-bold sm:col-span-2">
@@ -277,6 +329,53 @@ export default function ProductForm({ product }: { product?: ProductValues }) {
           defaultValue={product?.suitableFor.join(", ")}
           className={`${inputClass} sm:col-span-2`}
         />
+
+        <fieldset className="border-gold/25 bg-latte/40 rounded-2xl border p-4 sm:col-span-2">
+          <legend className="font-farsi text-espresso px-2 text-sm font-bold">
+            انتخاب آسیاب هنگام خرید
+          </legend>
+          <label className="font-farsi text-espresso flex items-center gap-2 text-sm font-bold">
+            <input
+              type="checkbox"
+              name="grindingAvailable"
+              checked={grindingAvailable}
+              onChange={(event) => setGrindingAvailable(event.target.checked)}
+            />
+            این قهوه امکان آسیاب دارد
+          </label>
+
+          {grindingAvailable && (
+            <div className="mt-4 space-y-4">
+              <div className="grid gap-2 sm:grid-cols-2">
+                {GRIND_OPTION_PRESETS.map((option) => (
+                  <label
+                    key={option}
+                    className="font-farsi text-clay flex items-center gap-2 rounded-xl bg-white px-3 py-2 text-xs"
+                  >
+                    <input
+                      type="checkbox"
+                      name="grindOptions"
+                      value={option}
+                      defaultChecked={product?.grindOptions.includes(option)}
+                    />
+                    {option}
+                  </label>
+                ))}
+              </div>
+              <input
+                name="customGrindOptions"
+                placeholder="گزینه سفارشی با ویرگول؛ مثال: کمکس، سایفون"
+                defaultValue={product?.grindOptions
+                  .filter((option) => !GRIND_OPTION_PRESETS.some((preset) => preset === option))
+                  .join("، ")}
+                className={inputClass}
+              />
+              <p className="font-farsi text-clay text-xs leading-6">
+                گزینه «دانه کامل (بدون آسیاب)» به‌صورت خودکار به مشتری نمایش داده می‌شود.
+              </p>
+            </div>
+          )}
+        </fieldset>
 
         <label className="font-farsi text-espresso flex items-center gap-2 text-sm sm:col-span-2">
           <input

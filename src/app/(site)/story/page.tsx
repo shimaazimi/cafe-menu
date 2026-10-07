@@ -24,10 +24,7 @@ export default function StoryPage() {
             آشنای رفاقت را در هر نوشیدنی حس کنید.
           </p>
 
-          <p>
-            ما را در {siteInfo.addressFa} پیدا کنید، یا از طریق اینستاگرام{" "}
-            {siteInfo.instagramHandle} همراه ما باشید.
-          </p>
+          <p>ما را در {siteInfo.addressFa} پیدا کنید و از نزدیک با محصولات ما آشنا شوید.</p>
         </div>
       </div>
 

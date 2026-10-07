@@ -1,17 +1,22 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { ArrowLeft, ArrowRight, Bean, RotateCcw, Sparkles } from "lucide-react";
+import { ArrowRight, RotateCcw, Sparkles } from "lucide-react";
 
 import { formatToman } from "@/lib/price";
+import ProductCard from "@/app/(site)/shop/ProductCard";
 
 interface Product {
   slug: string;
   nameFa: string;
   description: string;
   priceToman: number;
+  compareAtPrice: number | null;
+  category: string;
+  price250g: number | null;
+  price500g: number | null;
+  price1000g: number | null;
+  isAvailable: boolean;
   imageUrl: string | null;
   coffeeType: string | null;
   strength: number | null;
@@ -27,6 +32,8 @@ interface Product {
   flavorNotes: string[];
   suitableFor: string[];
   brewMethods: string[];
+  grindingAvailable: boolean;
+  grindOptions: string[];
 }
 
 const questions = [
@@ -168,38 +175,29 @@ export default function CoffeeFinder({ products }: { products: Product[] }) {
             {ranked.length ? (
               <div className="mt-7 grid gap-4 md:grid-cols-3">
                 {ranked.map(({ product }, index) => (
-                  <Link
+                  <ProductCard
                     key={product.slug}
-                    href={`/shop/${product.slug}`}
-                    className="border-gold/15 group rounded-2xl border p-3"
-                  >
-                    <div className="bg-parchment relative flex h-32 items-center justify-center overflow-hidden rounded-xl">
-                      {product.imageUrl ? (
-                        <Image
-                          src={product.imageUrl}
-                          alt={product.nameFa}
-                          fill
-                          sizes="240px"
-                          className="object-cover"
-                        />
-                      ) : (
-                        <Bean className="text-gold h-10 w-10" />
-                      )}
-                      {index === 0 && (
-                        <span className="bg-gold text-ink absolute top-2 right-2 rounded-full px-2 py-1 text-[10px] font-bold">
-                          بهترین انتخاب
-                        </span>
-                      )}
-                    </div>
-                    <h3 className="font-farsi text-espresso mt-3 font-bold">{product.nameFa}</h3>
-                    <p className="font-farsi text-clay mt-1 line-clamp-2 text-xs leading-5">
-                      {product.description}
-                    </p>
-                    <span className="font-farsi text-espresso mt-3 flex items-center justify-between text-xs font-bold">
-                      {product.priceOnRequest ? "استعلام قیمت" : formatToman(product.priceToman)}
-                      <ArrowLeft className="h-4 w-4 transition group-hover:-translate-x-1" />
-                    </span>
-                  </Link>
+                    id={product.slug}
+                    name={product.nameFa}
+                    description={product.description}
+                    price={formatToman(product.priceToman)}
+                    compareAtPrice={
+                      product.compareAtPrice ? formatToman(product.compareAtPrice) : undefined
+                    }
+                    category={product.category}
+                    imageUrl={product.imageUrl}
+                    coffeeType={product.coffeeType}
+                    brewMethods={product.brewMethods}
+                    grindingAvailable={product.grindingAvailable}
+                    grindOptions={product.grindOptions}
+                    price250g={product.price250g}
+                    price500g={product.price500g}
+                    price1000g={product.price1000g}
+                    isAvailable={product.isAvailable}
+                    catalogOnly={product.catalogOnly}
+                    priceOnRequest={product.priceOnRequest}
+                    badge={index === 0 ? "بهترین انتخاب" : undefined}
+                  />
                 ))}
               </div>
             ) : (

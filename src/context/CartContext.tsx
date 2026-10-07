@@ -8,9 +8,12 @@ const STORAGE_KEY = "cafe-friends-cart";
 
 export interface CartItem {
   id: string;
+  productSlug?: string;
   name: string;
   price: string;
   image?: string;
+  weightGrams?: number;
+  grindOption?: string;
 }
 
 interface CartEntry {
@@ -39,7 +42,10 @@ function isCartEntry(value: unknown): value is CartEntry {
     typeof entry.item === "object" &&
     typeof entry.item.id === "string" &&
     typeof entry.item.name === "string" &&
-    typeof entry.item.price === "string"
+    typeof entry.item.price === "string" &&
+    (entry.item.productSlug === undefined || typeof entry.item.productSlug === "string") &&
+    (entry.item.weightGrams === undefined || typeof entry.item.weightGrams === "number") &&
+    (entry.item.grindOption === undefined || typeof entry.item.grindOption === "string")
   );
 }
 

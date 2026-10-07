@@ -5,6 +5,7 @@ import { Package, Plus } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { formatToman, toPersianDigits } from "@/lib/price";
 import { PRODUCT_CATEGORY_LABELS } from "@/lib/productCategories";
+import { formatPackageWeight, getPackageOptions, usesPackagePricing } from "@/lib/productPackages";
 import DeleteProductButton from "./DeleteProductButton";
 
 export const dynamic = "force-dynamic";
@@ -37,6 +38,8 @@ export default async function AdminProductsPage() {
                 <th className="px-4 py-3 font-semibold">عنوان</th>
                 <th className="px-4 py-3 font-semibold">دسته‌بندی</th>
                 <th className="px-4 py-3 font-semibold">قیمت</th>
+                <th className="px-4 py-3 font-semibold">وزن‌ها</th>
+                <th className="px-4 py-3 font-semibold">آسیاب</th>
                 <th className="px-4 py-3 font-semibold">موجودی</th>
                 <th className="px-4 py-3 font-semibold"></th>
               </tr>
@@ -86,16 +89,38 @@ export default async function AdminProductsPage() {
                       <div className="text-clay/70 text-[10px]">هر کیلو</div>
                     )}
                   </td>
+                  <td className="text-clay px-4 py-3 whitespace-nowrap">
+                    {getPackageOptions(product).length > 0
+                      ? getPackageOptions(product)
+                          .map((option) => formatPackageWeight(option.weightGrams))
+                          .join("، ")
+                      : "—"}
+                  </td>
+                  <td className="text-clay max-w-xs px-4 py-3 text-xs">
+                    {product.grindingAvailable ? product.grindOptions.join("، ") : "بدون آسیاب"}
+                  </td>
                   <td className="px-4 py-3">
-                    <span
-                      className={
-                        product.stockQuantity === 0
-                          ? "font-bold text-red-600"
-                          : "text-espresso font-bold"
-                      }
-                    >
-                      {toPersianDigits(product.stockQuantity)}
-                    </span>
+                    {usesPackagePricing(product.category) ? (
+                      <span
+                        className={
+                          product.isAvailable
+                            ? "font-bold text-emerald-700"
+                            : "font-bold text-red-600"
+                        }
+                      >
+                        {product.isAvailable ? "موجود" : "ناموجود"}
+                      </span>
+                    ) : (
+                      <span
+                        className={
+                          product.stockQuantity === 0
+                            ? "font-bold text-red-600"
+                            : "text-espresso font-bold"
+                        }
+                      >
+                        {toPersianDigits(product.stockQuantity)}
+                      </span>
+                    )}
                   </td>
                   <td className="px-4 py-3">
                     <DeleteProductButton productId={product.id} productName={product.nameFa} />

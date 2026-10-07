@@ -5,6 +5,7 @@ import { RotateCcw, Coffee, MapPin, User } from "lucide-react";
 
 import { toPersianDigits } from "@/lib/price";
 import { orderStatusLabel } from "@/lib/orderStatus";
+import { paymentStatusLabel } from "@/lib/checkout";
 
 const TABS = [
   { id: "purchases", label: "خریدهای من" },
@@ -18,12 +19,12 @@ type TabId = (typeof TABS)[number]["id"];
 interface OrderView {
   id: number;
   status: string;
+  paymentStatus: string;
   totalFormatted: string;
   dateFormatted: string;
+  address: string | null;
   items: { nameFa: string; quantity: number }[];
 }
-
-const MOCK_ADDRESSES = [{ label: "خانه", detail: "تهران، بازار بزرگ، خیابان سید اسماعیل، پلاک ۲" }];
 
 function orderSummary(order: OrderView) {
   return order.items
@@ -42,8 +43,13 @@ export default function ProfileTabs({
 }) {
   const [tab, setTab] = useState<TabId>("purchases");
 
-  const activeOrders = orders.filter((o) => o.status === "pending" || o.status === "preparing");
+  const activeOrders = orders.filter((o) =>
+    ["awaiting_payment", "pending", "preparing"].includes(o.status),
+  );
   const pastOrders = orders.filter((o) => o.status === "completed" || o.status === "cancelled");
+  const addresses = Array.from(
+    new Set(orders.map((order) => order.address).filter(Boolean)),
+  ) as string[];
 
   return (
     <div dir="rtl">
@@ -82,6 +88,9 @@ export default function ProfileTabs({
               </div>
 
               <p className="font-farsi text-clay mt-1 text-sm">{orderSummary(order)}</p>
+              <p className="font-farsi text-clay mt-1 text-xs">
+                پرداخت: {paymentStatusLabel(order.paymentStatus)}
+              </p>
 
               <div className="mt-3 flex items-center justify-between">
                 <span className="text-espresso text-sm font-bold">{order.totalFormatted}</span>
@@ -130,6 +139,9 @@ export default function ProfileTabs({
                 <p className="font-farsi text-clay text-xs">
                   وضعیت: {orderStatusLabel(order.status)} · {orderSummary(order)}
                 </p>
+                <p className="font-farsi text-clay mt-1 text-xs">
+                  پرداخت: {paymentStatusLabel(order.paymentStatus)}
+                </p>
               </div>
             </div>
           ))}
@@ -138,16 +150,23 @@ export default function ProfileTabs({
 
       {tab === "addresses" && (
         <div className="flex flex-col gap-3">
-          {MOCK_ADDRESSES.map((address) => (
+          {addresses.length === 0 && (
+            <p className="font-farsi text-clay text-sm">
+              هنوز نشانی‌ای در سفارش‌های شما ثبت نشده است.
+            </p>
+          )}
+          {addresses.map((address, index) => (
             <div
-              key={address.label}
+              key={address}
               className="border-gold/20 flex items-start gap-3 rounded-2xl border bg-white p-4 shadow-sm"
             >
               <MapPin className="text-gold mt-0.5 h-4 w-4 shrink-0" strokeWidth={1.5} />
 
               <div>
-                <p className="font-farsi text-espresso text-sm font-bold">{address.label}</p>
-                <p className="font-farsi text-clay text-xs">{address.detail}</p>
+                <p className="font-farsi text-espresso text-sm font-bold">
+                  نشانی {toPersianDigits(index + 1)}
+                </p>
+                <p className="font-farsi text-clay text-xs">{address}</p>
               </div>
             </div>
           ))}

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArrowRight, Bean, Check, Coffee, Gauge, Package } from "lucide-react";
 import { notFound } from "next/navigation";
 
-import AddToCartButton from "@/components/shop/AddToCartButton";
+import ProductPurchasePanel from "@/components/shop/ProductPurchasePanel";
 import {
   BREW_METHOD_LABELS,
   COFFEE_TYPE_LABELS,
@@ -12,8 +12,9 @@ import {
   SUITABLE_FOR_LABELS,
   intensityDots,
 } from "@/lib/coffeeProduct";
-import { formatToman, toPersianDigits } from "@/lib/price";
+import { toPersianDigits } from "@/lib/price";
 import { prisma } from "@/lib/prisma";
+import { formatPackageWeight, getPackageOptions } from "@/lib/productPackages";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +24,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   if (!product) notFound();
 
   const isCoffee = Boolean(product.productForm || product.coffeeType);
+  const packageOptions = getPackageOptions(product);
 
   return (
     <main dir="rtl" className="bg-latte min-h-screen px-5 py-8 pb-24 md:px-10 md:py-14">
@@ -68,8 +70,16 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                   value={product.roastLevel ? ROAST_LEVEL_LABELS[product.roastLevel] : "—"}
                 />
                 <Stat
-                  label="وزن"
-                  value={product.weightGrams ? `${product.weightGrams} گرم` : "—"}
+                  label="وزن‌های موجود"
+                  value={
+                    packageOptions.length > 0
+                      ? packageOptions
+                          .map((option) => formatPackageWeight(option.weightGrams))
+                          .join("، ")
+                      : product.weightGrams
+                        ? `${toPersianDigits(product.weightGrams)} گرم`
+                        : "—"
+                  }
                 />
                 <Stat label="شدت" value={intensityDots(product.strength)} />
                 <Stat label="تلخی" value={intensityDots(product.bitterness)} />
@@ -108,30 +118,20 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               </InfoList>
             )}
 
-            <div className="mt-auto pt-8">
-              <p className="font-farsi text-espresso mb-4 text-xl font-black">
-                {product.priceOnRequest ? "استعلام قیمت" : formatToman(product.priceToman)}
-                {!product.priceOnRequest && product.priceBasisGrams === 1000 && (
-                  <span className="text-clay mr-2 text-xs font-normal">برای هر کیلو</span>
-                )}
-              </p>
-              {product.catalogOnly || product.priceOnRequest ? (
-                <Link
-                  href="/business"
-                  className="font-farsi bg-gold text-ink hover:bg-gold-light flex w-full items-center justify-center rounded-full px-6 py-3 font-bold transition"
-                >
-                  استعلام خرید عمده
-                </Link>
-              ) : (
-                <AddToCartButton
-                  id={product.slug}
-                  name={product.nameFa}
-                  price={formatToman(product.priceToman)}
-                  image={product.imageUrl}
-                  wide
-                />
-              )}
-            </div>
+            <ProductPurchasePanel
+              slug={product.slug}
+              name={product.nameFa}
+              image={product.imageUrl}
+              basePriceToman={product.priceToman}
+              price250g={product.price250g}
+              price500g={product.price500g}
+              price1000g={product.price1000g}
+              isAvailable={product.isAvailable}
+              priceOnRequest={product.priceOnRequest}
+              catalogOnly={product.catalogOnly}
+              grindingAvailable={product.grindingAvailable}
+              grindOptions={product.grindOptions}
+            />
           </div>
         </div>
       </div>

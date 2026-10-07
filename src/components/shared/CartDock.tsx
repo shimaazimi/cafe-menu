@@ -32,7 +32,7 @@ export default function CartDock() {
     };
   }, [drawerOpen]);
 
-  if (pathname === "/cart" || totalItems === 0) return null;
+  if (pathname === "/cart" || pathname.startsWith("/checkout") || totalItems === 0) return null;
 
   return (
     <>
@@ -122,7 +122,7 @@ export default function CartDock() {
 
                     <div className="min-w-0 flex-1">
                       <Link
-                        href={`/shop/${line.item.id}`}
+                        href={`/shop/${line.item.productSlug ?? line.item.id.split("::")[0]}`}
                         onClick={() => setIsOpen(false)}
                         className="font-farsi text-espresso line-clamp-2 text-sm leading-6 font-bold"
                       >

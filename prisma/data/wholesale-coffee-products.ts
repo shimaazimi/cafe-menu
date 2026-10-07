@@ -29,7 +29,7 @@ const wholesaleBase = {
   sourceNote: PRICE_LIST_NOTE,
 };
 
-export const wholesaleCoffeeProducts = [
+const wholesaleCatalogProducts = [
   {
     ...wholesaleBase,
     slug: "wholesale-ethiopia-lekempti-medium",
@@ -551,4 +551,161 @@ export const wholesaleCoffeeProducts = [
     profileConfidence: "supplier-label-only",
     researchSourceUrl: null,
   })),
+
+  ...[
+    ["garaboni-masala-tea", "چای ماسالا گارابونی", 1050000, "masala_tea"],
+    ["garaboni-diet-masala-tea", "چای ماسالا رژیمی گارابونی", 1300000, "diet_masala_tea"],
+    ["garaboni-cappuccino", "کاپوچینو گارابونی", 1100000, "cappuccino"],
+    ["garaboni-coffee-mix", "کافی‌میکس گارابونی", 1120000, "coffee_mix"],
+    ["garaboni-hot-chocolate", "هات چاکلت گارابونی", 860000, "hot_chocolate"],
+    ["garaboni-white-chocolate", "وایت چاکلت گارابونی", 1200000, "white_chocolate"],
+    ["garaboni-karak-tea", "چای کرک گارابونی", 1400000, "karak_tea"],
+    ["garaboni-caramel-latte", "چای لاته کاراملی گارابونی", 1450000, "caramel_latte"],
+    ["garaboni-coffee-mix-2-in-1", "کافی‌میکس ۲ در ۱ گارابونی", 1500000, "coffee_mix"],
+    ["garaboni-caramel-cappuccino", "کاپوچینو کاراملی گارابونی", 1150000, "cappuccino"],
+    ["garaboni-hazelnut-coffee-mix", "کافی‌میکس فندقی گارابونی", 1150000, "coffee_mix"],
+  ].map(([slug, nameFa, priceToman, grade]) => ({
+    ...wholesaleBase,
+    slug: String(slug),
+    nameFa: `${String(nameFa)} - قیمت کیلویی`,
+    description: `${String(nameFa)}، محصول پودری فوری برای سرو کافه‌ای؛ قیمت هر کیلو و حداقل سفارش عمده ۵ کیلوگرم.`,
+    priceToman: Number(priceToman),
+    category: "powdered-drinks",
+    minimumOrderGrams: 5000,
+    productForm: "instant_powder",
+    coffeeType: null,
+    roastLevel: null,
+    originCountry: null,
+    grade: String(grade),
+    strength: null,
+    bitterness: null,
+    acidity: null,
+    body: null,
+    sweetness: null,
+    caffeineLevel: null,
+    flavorNotes: [],
+    brewMethods: ["instant"],
+    suitableFor: ["office", "cafe"],
+    aiProfile: `فقط وقتی پیشنهاد شود که کاربر ${String(nameFa).replace(" گارابونی", "")} یا نوشیدنی پودری فوری می‌خواهد؛ درباره درصد قهوه، کافئین و ترکیباتی که در لیست تأمین‌کننده نیامده ادعای قطعی نشود.`,
+    profileConfidence: "supplier-label-only",
+    researchSourceUrl: null,
+  })),
+
+  {
+    ...wholesaleBase,
+    slug: "turkey-s9-cocoa-powder-25kg",
+    nameFa: "پودر کاکائو S9 ترک - بسته ۲۵ کیلوگرمی - استعلام قیمت",
+    description:
+      "پودر کاکائو S9 ترک برای مصارف کافه‌ای و تولیدی؛ بسته ۲۵ کیلوگرمی و قیمت فقط با استعلام.",
+    priceToman: 0,
+    priceOnRequest: true,
+    category: "cocoa-powder",
+    minimumOrderGrams: 25000,
+    productForm: "powder",
+    coffeeType: null,
+    roastLevel: null,
+    originCountry: "Turkey",
+    grade: "S9",
+    strength: null,
+    bitterness: null,
+    acidity: null,
+    body: null,
+    sweetness: null,
+    caffeineLevel: null,
+    flavorNotes: ["cocoa"],
+    brewMethods: [],
+    suitableFor: ["cafe"],
+    aiProfile:
+      "برای مشتری عمده‌ای که پودر کاکائو ترک S9 می‌خواهد؛ این محصول قهوه نیست و فقط در درخواست‌های مرتبط با کاکائو پیشنهاد شود.",
+    profileConfidence: "supplier-label-only",
+    researchSourceUrl: null,
+  },
+  {
+    ...wholesaleBase,
+    slug: "turkey-s9-cocoa-powder-5kg",
+    nameFa: "پودر کاکائو S9 ترک - بسته ۵ کیلوگرمی",
+    description:
+      "پودر کاکائو S9 ترک برای مصارف کافه‌ای و تولیدی؛ قیمت هر کیلو و حداقل سفارش ۵ کیلوگرم.",
+    priceToman: 2500000,
+    category: "cocoa-powder",
+    minimumOrderGrams: 5000,
+    productForm: "powder",
+    coffeeType: null,
+    roastLevel: null,
+    originCountry: "Turkey",
+    grade: "S9",
+    strength: null,
+    bitterness: null,
+    acidity: null,
+    body: null,
+    sweetness: null,
+    caffeineLevel: null,
+    flavorNotes: ["cocoa"],
+    brewMethods: [],
+    suitableFor: ["cafe"],
+    aiProfile:
+      "برای مشتری عمده‌ای که پودر کاکائو ترک S9 می‌خواهد؛ این محصول قهوه نیست و فقط در درخواست‌های مرتبط با کاکائو پیشنهاد شود.",
+    profileConfidence: "supplier-label-only",
+    researchSourceUrl: null,
+  },
+
+  ...[
+    [
+      "santos-coffee-mate-32-5kg",
+      "کافی‌میت ۳۲٪ سانتوس - بسته ۵ کیلوگرمی",
+      1100000,
+      5000,
+      "Santos 32%",
+    ],
+    ["santos-coffee-mate-25kg", "کافی‌میت سانتوس - بسته ۲۵ کیلوگرمی", 1050000, 25000, "Santos"],
+    [
+      "custom-food-foamer-12-5kg",
+      "فومر کاستوم فود - بسته ۱۲٫۵ کیلوگرمی",
+      2400000,
+      12500,
+      "Custom Food",
+    ],
+  ].map(([slug, nameFa, priceToman, minimumOrderGrams, grade]) => ({
+    ...wholesaleBase,
+    slug: String(slug),
+    nameFa: `${String(nameFa)} - قیمت کیلویی`,
+    description: `${String(nameFa)} برای استفاده در نوشیدنی‌های گرم و فوری؛ قیمت هر کیلو و حداقل سفارش ${Number(minimumOrderGrams) / 1000} کیلوگرم.`,
+    priceToman: Number(priceToman),
+    category: "coffee-creamer",
+    minimumOrderGrams: Number(minimumOrderGrams),
+    productForm: "powder",
+    coffeeType: null,
+    roastLevel: null,
+    originCountry: null,
+    grade: String(grade),
+    strength: null,
+    bitterness: null,
+    acidity: null,
+    body: null,
+    sweetness: null,
+    caffeineLevel: null,
+    flavorNotes: [],
+    brewMethods: ["instant"],
+    suitableFor: ["office", "cafe"],
+    aiProfile:
+      "این محصول افزودنی نوشیدنی است، نه قهوه؛ فقط برای درخواست کافی‌میت، کریمر یا فومر پیشنهاد شود.",
+    profileConfidence: "supplier-label-only",
+    researchSourceUrl: null,
+  })),
 ];
+
+const RETAIL_WEIGHT_CATEGORIES = new Set(["beans", "ground-coffee", "instant-coffee"]);
+
+export const wholesaleCoffeeProducts = wholesaleCatalogProducts.map((product) => {
+  const hasRetailWeights = RETAIL_WEIGHT_CATEGORIES.has(product.category);
+  const priceOnRequest = product.priceOnRequest === true;
+
+  return {
+    ...product,
+    isAvailable: true,
+    catalogOnly: hasRetailWeights ? priceOnRequest : product.catalogOnly,
+    price250g: hasRetailWeights && !priceOnRequest ? Math.round(product.priceToman / 4) : null,
+    price500g: hasRetailWeights && !priceOnRequest ? Math.round(product.priceToman / 2) : null,
+    price1000g: hasRetailWeights && !priceOnRequest ? product.priceToman : null,
+  };
+});

@@ -6,12 +6,18 @@ import { PRODUCT_CATEGORY_LABELS } from "@/lib/productCategories";
 import Link from "next/link";
 import { Sparkles } from "lucide-react";
 import ShopGrid from "./ShopGrid";
+import { WEIGHT_PRICED_CATEGORIES } from "@/lib/productPackages";
 
 export const dynamic = "force-dynamic";
 
 export default async function ShopPage() {
   const products = await prisma.product.findMany({
-    where: { stockQuantity: { gt: 0 } },
+    where: {
+      OR: [
+        { category: { in: [...WEIGHT_PRICED_CATEGORIES] }, isAvailable: true },
+        { category: { notIn: [...WEIGHT_PRICED_CATEGORIES] }, stockQuantity: { gt: 0 } },
+      ],
+    },
     orderBy: { id: "asc" },
   });
 
@@ -44,6 +50,12 @@ export default async function ShopPage() {
                 nameFa: product.nameFa,
                 description: product.description,
                 priceFormatted: formatToman(product.priceToman),
+                price250g: product.price250g,
+                price500g: product.price500g,
+                price1000g: product.price1000g,
+                isAvailable: product.isAvailable,
+                catalogOnly: product.catalogOnly,
+                priceOnRequest: product.priceOnRequest,
                 compareAtPriceFormatted: hasDiscount
                   ? formatToman(product.compareAtPrice!)
                   : undefined,
@@ -54,6 +66,8 @@ export default async function ShopPage() {
                 imageUrl: product.imageUrl,
                 coffeeType: product.coffeeType,
                 brewMethods: product.brewMethods,
+                grindingAvailable: product.grindingAvailable,
+                grindOptions: product.grindOptions,
               };
             })}
             categoryLabels={PRODUCT_CATEGORY_LABELS}

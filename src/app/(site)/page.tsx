@@ -2,8 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Bean, BriefcaseBusiness, Coffee, Gift, MapPin, Sparkles } from "lucide-react";
 
-import { formatToman } from "@/lib/price";
+import { formatDiscountPercent, formatToman } from "@/lib/price";
 import { prisma } from "@/lib/prisma";
+import { WEIGHT_PRICED_CATEGORIES } from "@/lib/productPackages";
+import ProductCard from "./shop/ProductCard";
 
 export const dynamic = "force-dynamic";
 
@@ -31,7 +33,12 @@ const QUICK_PATHS = [
 
 export default async function Home() {
   const featuredProducts = await prisma.product.findMany({
-    where: { stockQuantity: { gt: 0 } },
+    where: {
+      OR: [
+        { category: { in: [...WEIGHT_PRICED_CATEGORIES] }, isAvailable: true },
+        { category: { notIn: [...WEIGHT_PRICED_CATEGORIES] }, stockQuantity: { gt: 0 } },
+      ],
+    },
     orderBy: { id: "asc" },
     take: 3,
   });
@@ -158,35 +165,38 @@ export default async function Home() {
               </Link>
             </div>
             <div className="mt-7 grid gap-4 md:grid-cols-3">
-              {featuredProducts.map((product) => (
-                <Link
-                  key={product.slug}
-                  href={`/shop/${product.slug}`}
-                  className="border-gold/15 flex items-center gap-4 rounded-3xl border bg-white p-4 shadow-sm"
-                >
-                  <div className="bg-parchment relative flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-2xl">
-                    {product.imageUrl ? (
-                      <Image
-                        src={product.imageUrl}
-                        alt={product.nameFa}
-                        fill
-                        sizes="96px"
-                        className="object-cover"
-                      />
-                    ) : (
-                      <Bean className="text-gold h-8 w-8" />
-                    )}
-                  </div>
-                  <div>
-                    <h3 className="font-farsi text-espresso leading-7 font-bold">
-                      {product.nameFa}
-                    </h3>
-                    <p className="font-farsi text-clay mt-2 text-xs">
-                      {formatToman(product.priceToman)}
-                    </p>
-                  </div>
-                </Link>
-              ))}
+              {featuredProducts.map((product) => {
+                const hasDiscount =
+                  product.compareAtPrice !== null && product.compareAtPrice > product.priceToman;
+
+                return (
+                  <ProductCard
+                    key={product.slug}
+                    id={product.slug}
+                    name={product.nameFa}
+                    description={product.description}
+                    price={formatToman(product.priceToman)}
+                    compareAtPrice={hasDiscount ? formatToman(product.compareAtPrice!) : undefined}
+                    discountPercent={
+                      hasDiscount
+                        ? formatDiscountPercent(product.priceToman, product.compareAtPrice!)
+                        : undefined
+                    }
+                    category={product.category}
+                    imageUrl={product.imageUrl}
+                    coffeeType={product.coffeeType}
+                    brewMethods={product.brewMethods}
+                    grindingAvailable={product.grindingAvailable}
+                    grindOptions={product.grindOptions}
+                    price250g={product.price250g}
+                    price500g={product.price500g}
+                    price1000g={product.price1000g}
+                    isAvailable={product.isAvailable}
+                    catalogOnly={product.catalogOnly}
+                    priceOnRequest={product.priceOnRequest}
+                  />
+                );
+              })}
             </div>
           </div>
         </section>

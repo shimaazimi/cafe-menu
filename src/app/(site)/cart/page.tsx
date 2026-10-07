@@ -8,7 +8,11 @@ export default async function CartPage() {
 
   return (
     <Suspense fallback={null}>
-      <CartView isLoggedIn={Boolean(user)} />
+      <CartView
+        isLoggedIn={Boolean(user)}
+        defaultName={user?.name ?? ""}
+        defaultPhone={user?.phone ?? ""}
+      />
     </Suspense>
   );
 }

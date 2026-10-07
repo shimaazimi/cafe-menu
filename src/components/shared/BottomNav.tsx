@@ -15,7 +15,7 @@ export default function BottomNav({ isLoggedIn }: BottomNavProps) {
   const { totalItems } = useCart();
 
   // CartView.tsx owns the bottom action bar on /cart — avoid stacking two fixed bars.
-  if (pathname === "/cart") return null;
+  if (pathname === "/cart" || pathname.startsWith("/checkout")) return null;
 
   const items = [
     { href: "/", label: "خانه", icon: Home, active: pathname === "/" },

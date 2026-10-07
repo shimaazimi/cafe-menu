@@ -6,28 +6,51 @@ import { useCart } from "@/context/CartContext";
 
 interface Props {
   id: string;
+  productSlug: string;
   name: string;
   price: string;
   image?: string | null;
+  weightGrams?: number;
+  grindOption?: string;
+  disabled?: boolean;
   wide?: boolean;
 }
 
-export default function AddToCartButton({ id, name, price, image, wide = false }: Props) {
+export default function AddToCartButton({
+  id,
+  productSlug,
+  name,
+  price,
+  image,
+  weightGrams,
+  grindOption,
+  disabled = false,
+  wide = false,
+}: Props) {
   const { getQuantity, add, remove } = useCart();
-  const item = { id, name, price, image: image ?? undefined };
+  const item = {
+    id,
+    productSlug,
+    name,
+    price,
+    image: image ?? undefined,
+    weightGrams,
+    grindOption,
+  };
   const quantity = getQuantity(id);
 
   if (quantity === 0) {
     return (
       <button
         onClick={() => add(item)}
-        className={`bg-gold text-ink hover:bg-gold-light flex items-center justify-center gap-2 rounded-full font-bold transition active:scale-95 ${
+        disabled={disabled}
+        className={`bg-gold text-ink hover:bg-gold-light flex items-center justify-center gap-2 rounded-full font-bold transition active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 ${
           wide ? "font-farsi w-full px-6 py-3" : "h-8 w-8"
         }`}
         aria-label="افزودن به سبد خرید"
       >
         {wide ? <ShoppingBag className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-        {wide && "افزودن به سبد خرید"}
+        {wide && (disabled ? "ابتدا نوع آسیاب را انتخاب کنید" : "افزودن به سبد خرید")}
       </button>
     );
   }
