@@ -140,25 +140,62 @@ export async function createOrder(items: OrderItemInput[], details: CheckoutDeta
   const shippingCostToman = getShippingCost(checkout.shippingMethod);
   const totalToman = subtotalToman + shippingCostToman;
 
-  const order = await prisma.order.create({
-    data: {
-      status: "awaiting_payment",
-      subtotalToman,
-      shippingCostToman,
-      totalToman,
-      note: checkout.note,
-      recipientName: checkout.recipientName,
-      recipientPhone: checkout.recipientPhone,
-      province: checkout.province,
-      city: checkout.city,
-      postalAddress: checkout.postalAddress,
-      postalCode: checkout.postalCode,
-      shippingMethod: checkout.shippingMethod,
-      paymentStatus: "pending",
-      paymentMethod: "mock_gateway",
-      userId: user.id,
-      items: { create: verifiedItems },
-    },
+  const order = await prisma.$transaction(async (tx) => {
+    const matchingAddress = await tx.userAddress.findFirst({
+      where: {
+        userId: user.id,
+        province: checkout.province,
+        city: checkout.city,
+        postalAddress: checkout.postalAddress,
+      },
+    });
+
+    if (matchingAddress) {
+      await tx.userAddress.update({
+        where: { id: matchingAddress.id },
+        data: {
+          recipientName: checkout.recipientName,
+          recipientPhone: checkout.recipientPhone,
+          postalCode: checkout.postalCode,
+        },
+      });
+    } else {
+      const addressCount = await tx.userAddress.count({ where: { userId: user.id } });
+      await tx.userAddress.create({
+        data: {
+          userId: user.id,
+          label: addressCount === 0 ? "آدرس اصلی" : "آدرس جدید",
+          recipientName: checkout.recipientName,
+          recipientPhone: checkout.recipientPhone,
+          province: checkout.province,
+          city: checkout.city,
+          postalAddress: checkout.postalAddress,
+          postalCode: checkout.postalCode,
+          isDefault: addressCount === 0,
+        },
+      });
+    }
+
+    return tx.order.create({
+      data: {
+        status: "awaiting_payment",
+        subtotalToman,
+        shippingCostToman,
+        totalToman,
+        note: checkout.note,
+        recipientName: checkout.recipientName,
+        recipientPhone: checkout.recipientPhone,
+        province: checkout.province,
+        city: checkout.city,
+        postalAddress: checkout.postalAddress,
+        postalCode: checkout.postalCode,
+        shippingMethod: checkout.shippingMethod,
+        paymentStatus: "pending",
+        paymentMethod: "mock_gateway",
+        userId: user.id,
+        items: { create: verifiedItems },
+      },
+    });
   });
 
   return { id: order.id, totalToman: order.totalToman };

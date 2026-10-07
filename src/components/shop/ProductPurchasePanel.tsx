@@ -81,27 +81,45 @@ export default function ProductPurchasePanel({
 
       {customerGrindOptions.length > 0 && (
         <div className="mb-5">
-          <label
-            htmlFor={`grind-${slug}`}
-            className="font-farsi text-espresso mb-2 block text-sm font-bold"
+          <div className="mb-2 flex items-center justify-between gap-3">
+            <p className="font-farsi text-espresso text-sm font-bold">نوع آسیاب</p>
+            {selectedGrind && (
+              <button
+                type="button"
+                onClick={() => setSelectedGrind("")}
+                className="font-farsi text-clay text-xs underline"
+              >
+                انتخاب در سبد
+              </button>
+            )}
+          </div>
+          <div
+            role="radiogroup"
+            aria-label={`نوع آسیاب ${name}`}
+            className="grid grid-cols-2 gap-2"
           >
-            نوع آسیاب
-          </label>
-          <select
-            id={`grind-${slug}`}
-            value={selectedGrind}
-            onChange={(event) => setSelectedGrind(event.target.value)}
-            className="font-farsi border-gold/25 text-espresso focus:border-gold w-full rounded-xl border bg-white px-4 py-3 text-sm outline-none"
-          >
-            <option value="" disabled>
-              نوع آسیاب را انتخاب کنید
-            </option>
             {customerGrindOptions.map((option) => (
-              <option key={option} value={option}>
+              <button
+                key={option}
+                type="button"
+                role="radio"
+                aria-checked={selectedGrind === option}
+                onClick={() => setSelectedGrind(option)}
+                className={`font-farsi rounded-xl border px-3 py-2.5 text-xs font-bold transition ${
+                  selectedGrind === option
+                    ? "border-gold bg-gold text-ink"
+                    : "border-gold/20 bg-parchment text-espresso"
+                }`}
+              >
                 {option}
-              </option>
+              </button>
             ))}
-          </select>
+          </div>
+          {!selectedGrind && (
+            <p className="font-farsi text-clay mt-2 text-xs">
+              می‌توانید بعداً در سبد خرید انتخاب کنید.
+            </p>
+          )}
         </div>
       )}
 
@@ -138,7 +156,7 @@ export default function ProductPurchasePanel({
           image={image}
           weightGrams={selectedWeight ?? undefined}
           grindOption={selectedGrind || undefined}
-          disabled={customerGrindOptions.length > 0 && !selectedGrind}
+          grindOptions={customerGrindOptions}
           wide
         />
       )}

@@ -13,6 +13,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@code-plate/iran-cities": "^1.1.0",
     "@prisma/adapter-pg": "^7.10.0",
     "@prisma/client": "^7.9.1",
     "lucide-react": "^1.23.0",

@@ -20,11 +20,17 @@ export default async function ProfilePage() {
 
   const displayName = user.name ?? user.phone;
 
-  const rawOrders = await prisma.order.findMany({
-    where: { userId: user.id },
-    include: { items: true },
-    orderBy: { createdAt: "desc" },
-  });
+  const [rawOrders, rawAddresses] = await Promise.all([
+    prisma.order.findMany({
+      where: { userId: user.id },
+      include: { items: true },
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.userAddress.findMany({
+      where: { userId: user.id },
+      orderBy: [{ isDefault: "desc" }, { createdAt: "desc" }],
+    }),
+  ]);
 
   const orders = rawOrders.map((order) => ({
     id: order.id,
@@ -75,7 +81,22 @@ export default async function ProfilePage() {
       <div className="divider-ornate" aria-hidden />
 
       <div className="mx-auto max-w-md px-6 pt-6 pb-16 md:max-w-2xl">
-        <ProfileTabs name={displayName} phone={user.phone} orders={orders} />
+        <ProfileTabs
+          name={displayName}
+          phone={user.phone}
+          orders={orders}
+          addresses={rawAddresses.map((address) => ({
+            id: address.id,
+            label: address.label,
+            recipientName: address.recipientName,
+            recipientPhone: address.recipientPhone,
+            province: address.province,
+            city: address.city,
+            postalAddress: address.postalAddress,
+            postalCode: address.postalCode,
+            isDefault: address.isDefault,
+          }))}
+        />
       </div>
 
       <div className="h-16 md:hidden" aria-hidden />

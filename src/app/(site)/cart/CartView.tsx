@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, Coffee, MapPin, Minus, Plus, Trash2, Truck } from "lucide-react";
+import { AlertCircle, ArrowRight, Coffee, MapPin, Minus, Plus, Trash2, Truck } from "lucide-react";
 
 import { useCart } from "@/context/CartContext";
 import { formatToman } from "@/lib/price";
@@ -12,6 +12,7 @@ import { createOrder } from "@/app/actions/orders";
 import { toast } from "@/lib/toastStore";
 import { formatPackageWeight } from "@/lib/productPackages";
 import { getShippingCost, SHIPPING_METHODS } from "@/lib/checkout";
+import LocationSelects from "@/components/forms/LocationSelects";
 
 const inputClass =
   "font-farsi border-espresso/15 text-espresso focus:border-gold w-full rounded-xl border bg-white px-4 py-3 text-sm outline-none transition";
@@ -20,18 +21,74 @@ interface Props {
   isLoggedIn: boolean;
   defaultName: string;
   defaultPhone: string;
+  savedAddresses: SavedAddress[];
+  productGrindOptions: Record<string, string[]>;
 }
 
-export default function CartView({ isLoggedIn, defaultName, defaultPhone }: Props) {
+interface SavedAddress {
+  id: number;
+  label: string;
+  recipientName: string;
+  recipientPhone: string;
+  province: string;
+  city: string;
+  postalAddress: string;
+  postalCode: string;
+  isDefault: boolean;
+}
+
+export default function CartView({
+  isLoggedIn,
+  defaultName,
+  defaultPhone,
+  savedAddresses,
+  productGrindOptions,
+}: Props) {
   const router = useRouter();
-  const { lines, totalPrice, add, remove, setQuantity } = useCart();
+  const { lines, totalPrice, add, remove, setQuantity, setGrindOption } = useCart();
+  const defaultAddress = savedAddresses.find((address) => address.isDefault) ?? savedAddresses[0];
+  const [selectedAddressId, setSelectedAddressId] = useState<number | null>(
+    defaultAddress?.id ?? null,
+  );
+  const [recipientName, setRecipientName] = useState(defaultAddress?.recipientName ?? defaultName);
+  const [recipientPhone, setRecipientPhone] = useState(
+    defaultAddress?.recipientPhone ?? defaultPhone,
+  );
+  const [province, setProvince] = useState(defaultAddress?.province ?? "");
+  const [city, setCity] = useState(defaultAddress?.city ?? "");
+  const [postalAddress, setPostalAddress] = useState(defaultAddress?.postalAddress ?? "");
+  const [postalCode, setPostalCode] = useState(defaultAddress?.postalCode ?? "");
   const [shippingMethod, setShippingMethod] = useState<keyof typeof SHIPPING_METHODS>("standard");
   const [isPending, startTransition] = useTransition();
   const shippingCost = getShippingCost(shippingMethod);
   const payableTotal = totalPrice + shippingCost;
+  const getLineGrindOptions = (item: (typeof lines)[number]["item"]) =>
+    item.grindOptions?.length
+      ? item.grindOptions
+      : item.productSlug
+        ? (productGrindOptions[item.productSlug] ?? [])
+        : [];
+  const missingGrindItems = lines.filter(
+    (line) => getLineGrindOptions(line.item).length > 0 && !line.item.grindOption,
+  );
+
+  const chooseAddress = (address: SavedAddress) => {
+    setSelectedAddressId(address.id);
+    setRecipientName(address.recipientName);
+    setRecipientPhone(address.recipientPhone);
+    setProvince(address.province);
+    setCity(address.city);
+    setPostalAddress(address.postalAddress);
+    setPostalCode(address.postalCode);
+  };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    if (missingGrindItems.length > 0) {
+      toast.error("نوع آسیاب همه قهوه‌ها را در سبد انتخاب کنید");
+      return;
+    }
 
     if (!isLoggedIn) {
       toast.info("برای ادامه خرید ابتدا وارد حساب کاربری خود شوید");
@@ -136,6 +193,34 @@ export default function CartView({ isLoggedIn, defaultName, defaultPhone }: Prop
                           </span>
                         )}
                       </div>
+                      {getLineGrindOptions(line.item).length > 0 && (
+                        <label className="font-farsi mt-2 block max-w-xs text-xs">
+                          <span className="text-espresso mb-1 block font-bold">نوع آسیاب</span>
+                          <select
+                            value={line.item.grindOption ?? ""}
+                            onChange={(event) =>
+                              setGrindOption(
+                                line.item.id,
+                                event.target.value,
+                                getLineGrindOptions(line.item),
+                              )
+                            }
+                            aria-invalid={!line.item.grindOption}
+                            className={`w-full rounded-lg border px-3 py-2 transition outline-none ${
+                              line.item.grindOption
+                                ? "border-gold/25 bg-parchment text-espresso"
+                                : "border-red-300 bg-red-50 text-red-700"
+                            }`}
+                          >
+                            <option value="">انتخاب نوع آسیاب (الزامی)</option>
+                            {getLineGrindOptions(line.item).map((option) => (
+                              <option key={option} value={option}>
+                                {option}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                      )}
                       <p className="font-farsi text-clay mt-1 text-sm">
                         {formatToman(line.lineTotal)}
                       </p>
@@ -181,11 +266,51 @@ export default function CartView({ isLoggedIn, defaultName, defaultPhone }: Prop
                 <MapPin className="text-gold h-5 w-5" />
                 <h2 className="font-farsi-display text-espresso text-xl">اطلاعات تحویل</h2>
               </div>
+              {savedAddresses.length > 0 && (
+                <div className="no-scrollbar mt-4 flex gap-2 overflow-x-auto pb-1">
+                  {savedAddresses.map((address) => (
+                    <button
+                      key={address.id}
+                      type="button"
+                      onClick={() => chooseAddress(address)}
+                      className={`font-farsi min-w-52 rounded-2xl border p-3 text-right text-xs transition ${
+                        selectedAddressId === address.id
+                          ? "border-gold bg-parchment text-espresso"
+                          : "border-gold/15 text-clay bg-white"
+                      }`}
+                    >
+                      <span className="block font-bold">
+                        {address.label}
+                        {address.isDefault ? " · پیش‌فرض" : ""}
+                      </span>
+                      <span className="mt-1 line-clamp-2 block">
+                        {address.province}، {address.city}، {address.postalAddress}
+                      </span>
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedAddressId(null);
+                      setRecipientName(defaultName);
+                      setRecipientPhone(defaultPhone);
+                      setProvince("");
+                      setCity("");
+                      setPostalAddress("");
+                      setPostalCode("");
+                    }}
+                    className="font-farsi border-gold/20 text-espresso min-w-32 rounded-2xl border border-dashed px-3 py-2 text-xs font-bold"
+                  >
+                    + نشانی جدید
+                  </button>
+                </div>
+              )}
               <div className="mt-5 grid gap-3 sm:grid-cols-2">
                 <input
                   name="recipientName"
                   placeholder="نام و نام خانوادگی تحویل‌گیرنده"
-                  defaultValue={defaultName}
+                  value={recipientName}
+                  onChange={(event) => setRecipientName(event.target.value)}
                   required
                   minLength={2}
                   className={inputClass}
@@ -195,24 +320,34 @@ export default function CartView({ isLoggedIn, defaultName, defaultPhone }: Prop
                   type="tel"
                   inputMode="tel"
                   placeholder="شماره موبایل"
-                  defaultValue={defaultPhone}
+                  value={recipientPhone}
+                  onChange={(event) => setRecipientPhone(event.target.value)}
                   required
                   className={inputClass}
                 />
-                <input name="province" placeholder="استان" required className={inputClass} />
-                <input name="city" placeholder="شهر" required className={inputClass} />
+                <LocationSelects
+                  province={province}
+                  city={city}
+                  onProvinceChange={setProvince}
+                  onCityChange={setCity}
+                  className={inputClass}
+                />
                 <textarea
                   name="postalAddress"
                   placeholder="نشانی کامل، خیابان، کوچه، پلاک و واحد"
                   required
                   minLength={10}
                   rows={3}
+                  value={postalAddress}
+                  onChange={(event) => setPostalAddress(event.target.value)}
                   className={`${inputClass} sm:col-span-2`}
                 />
                 <input
                   name="postalCode"
                   inputMode="numeric"
                   placeholder="کد پستی (اختیاری)"
+                  value={postalCode}
+                  onChange={(event) => setPostalCode(event.target.value)}
                   className={inputClass}
                 />
                 <textarea
@@ -272,11 +407,17 @@ export default function CartView({ isLoggedIn, defaultName, defaultPhone }: Prop
             </div>
             <button
               type="submit"
-              disabled={isPending}
+              disabled={isPending || missingGrindItems.length > 0}
               className="font-farsi bg-gold text-ink hover:bg-gold-light mt-6 hidden w-full rounded-full px-6 py-3.5 text-sm font-bold transition disabled:opacity-60 lg:block"
             >
               {isPending ? "در حال ساخت سفارش..." : "ادامه و پرداخت"}
             </button>
+            {missingGrindItems.length > 0 && (
+              <p className="font-farsi mt-3 flex items-center justify-center gap-1 text-center text-xs text-red-600">
+                <AlertCircle className="h-4 w-4" />
+                نوع آسیاب {missingGrindItems.length} محصول را انتخاب کنید.
+              </p>
+            )}
             {!isLoggedIn && (
               <p className="font-farsi mt-3 text-center text-xs text-amber-700">
                 در مرحله بعد وارد حساب می‌شوید.
@@ -294,7 +435,7 @@ export default function CartView({ isLoggedIn, defaultName, defaultPhone }: Prop
               </div>
               <button
                 type="submit"
-                disabled={isPending}
+                disabled={isPending || missingGrindItems.length > 0}
                 className="font-farsi bg-gold text-ink rounded-full px-6 py-3 text-sm font-bold disabled:opacity-60"
               >
                 {isPending ? "در حال ثبت..." : "ادامه و پرداخت"}

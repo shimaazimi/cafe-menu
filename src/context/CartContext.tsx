@@ -3,6 +3,7 @@
 import { useMemo, useSyncExternalStore } from "react";
 
 import { parseTomanPrice } from "@/lib/price";
+import { buildCartItemId } from "@/lib/grindOptions";
 
 const STORAGE_KEY = "cafe-friends-cart";
 
@@ -14,6 +15,7 @@ export interface CartItem {
   image?: string;
   weightGrams?: number;
   grindOption?: string;
+  grindOptions?: string[];
 }
 
 interface CartEntry {
@@ -45,7 +47,10 @@ function isCartEntry(value: unknown): value is CartEntry {
     typeof entry.item.price === "string" &&
     (entry.item.productSlug === undefined || typeof entry.item.productSlug === "string") &&
     (entry.item.weightGrams === undefined || typeof entry.item.weightGrams === "number") &&
-    (entry.item.grindOption === undefined || typeof entry.item.grindOption === "string")
+    (entry.item.grindOption === undefined || typeof entry.item.grindOption === "string") &&
+    (entry.item.grindOptions === undefined ||
+      (Array.isArray(entry.item.grindOptions) &&
+        entry.item.grindOptions.every((option) => typeof option === "string")))
   );
 }
 
@@ -116,6 +121,33 @@ class CartStore {
     this.commit({ ...rest, [itemId]: { item: existing.item, quantity } });
   }
 
+  setGrindOption(itemId: string, grindOption: string, grindOptions?: string[]) {
+    const existing = this.entries[itemId];
+    if (!existing || !existing.item.productSlug) return;
+
+    const nextId = buildCartItemId(
+      existing.item.productSlug,
+      existing.item.weightGrams,
+      grindOption || undefined,
+    );
+    const rest = { ...this.entries };
+    delete rest[itemId];
+    const nextQuantity = (rest[nextId]?.quantity ?? 0) + existing.quantity;
+
+    this.commit({
+      ...rest,
+      [nextId]: {
+        item: {
+          ...existing.item,
+          id: nextId,
+          grindOption: grindOption || undefined,
+          grindOptions: grindOptions ?? existing.item.grindOptions,
+        },
+        quantity: nextQuantity,
+      },
+    });
+  }
+
   clear() {
     this.commit({});
   }
@@ -149,6 +181,8 @@ export function useCart() {
     add: (item: CartItem) => cartStore.add(item),
     remove: (itemId: string) => cartStore.remove(itemId),
     setQuantity: (itemId: string, quantity: number) => cartStore.setQuantity(itemId, quantity),
+    setGrindOption: (itemId: string, grindOption: string, grindOptions?: string[]) =>
+      cartStore.setGrindOption(itemId, grindOption, grindOptions),
     clear: () => cartStore.clear(),
   };
 }

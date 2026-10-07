@@ -66,7 +66,6 @@ export default function ProductCard({
     packageOptions[0]?.weightGrams ?? null,
   );
   const customerGrindOptions = getCustomerGrindOptions(grindingAvailable, grindOptions);
-  const [selectedGrind, setSelectedGrind] = useState("");
   const selectedOption = packageOptions.find((option) => option.weightGrams === selectedWeight);
   const displayPrice = selectedOption ? formatToman(selectedOption.priceToman) : price;
   const displayCompareAtPrice = selectedOption ? undefined : compareAtPrice;
@@ -150,21 +149,9 @@ export default function ProductCard({
       )}
 
       {customerGrindOptions.length > 0 && (
-        <select
-          value={selectedGrind}
-          onChange={(event) => setSelectedGrind(event.target.value)}
-          aria-label={`نوع آسیاب ${name}`}
-          className="font-farsi border-gold/20 text-espresso bg-parchment mb-3 w-full rounded-lg border px-2 py-2 text-[11px] outline-none"
-        >
-          <option value="" disabled>
-            نوع آسیاب را انتخاب کنید
-          </option>
-          {customerGrindOptions.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
+        <p className="font-farsi text-clay bg-parchment mb-3 rounded-lg px-2 py-2 text-[10px]">
+          نوع آسیاب را در سبد خرید انتخاب می‌کنید
+        </p>
       )}
 
       <div className="mt-auto flex items-center justify-between">
@@ -195,14 +182,13 @@ export default function ProductCard({
           </Link>
         ) : (
           <AddToCartButton
-            id={buildCartItemId(id, selectedOption?.weightGrams, selectedGrind || undefined)}
+            id={buildCartItemId(id, selectedOption?.weightGrams)}
             productSlug={id}
             name={name}
             price={displayPrice}
             image={imageUrl}
             weightGrams={selectedOption?.weightGrams}
-            grindOption={selectedGrind || undefined}
-            disabled={customerGrindOptions.length > 0 && !selectedGrind}
+            grindOptions={customerGrindOptions}
           />
         )}
       </div>

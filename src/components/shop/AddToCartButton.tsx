@@ -12,6 +12,7 @@ interface Props {
   image?: string | null;
   weightGrams?: number;
   grindOption?: string;
+  grindOptions?: string[];
   disabled?: boolean;
   wide?: boolean;
 }
@@ -24,6 +25,7 @@ export default function AddToCartButton({
   image,
   weightGrams,
   grindOption,
+  grindOptions,
   disabled = false,
   wide = false,
 }: Props) {
@@ -36,6 +38,7 @@ export default function AddToCartButton({
     image: image ?? undefined,
     weightGrams,
     grindOption,
+    grindOptions,
   };
   const quantity = getQuantity(id);
 
